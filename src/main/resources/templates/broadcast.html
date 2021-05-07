@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>December Market</title>
+    <link href="../static/css/styles.css" th:href="@{../static/css/styles.css}" rel="stylesheet" />
+</head>
+
+<body>
+<div class="score-board">
+    <header class="score-board_header">
+        <div class="score-board_title">
+            championship
+        </div>
+    </header>
+    <div class="score-board_body">
+        <div class="score-board_team">
+            <span th:text="${board.get().getHomeName()}"/>
+        </div>
+        <div class="score-board_score">
+            <span th:text="${board.get().getHomeScore()}"/>
+            <span>VS</span>
+            <span>0</span>
+        </div>
+        <div class="score-board_team">
+            <span th:text="${board.get().getAwayName()}"/>
+        </div>
+    </div>
+    <footer class="score-board_footer">
+        <div class="score-board_timer">
+      <span>
+        00:00
+      </span>
+        </div>
+    </footer>
+</div>
+
+</body>
+</html>

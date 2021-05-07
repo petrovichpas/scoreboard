@@ -1,0 +1,19 @@
+#server:
+#  port: 8189
+#  servlet:
+#    context-path: /
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/postgres
+#    username: postgres
+#    password: 0131
+#  jpa:
+#    generate-ddl: true
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.PostgreSQL95Dialect
+#        temp:
+#          use_jdbc_metadata_defaults: falsespring.datasource.driver-class-name=org.postgresql.Driver
+#    show-sql: true
+#  thymeleaf:
+#    encoding: UTF-8
