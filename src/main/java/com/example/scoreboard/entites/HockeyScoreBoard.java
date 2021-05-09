@@ -2,9 +2,7 @@ package com.example.scoreboard.entites;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
-
 
 @Entity
 @Table(name = "hockey")
@@ -56,13 +54,4 @@ public class HockeyScoreBoard {
 //    private int awayPenaltySeconds1;
 //    private int awayPenaltySeconds2;
 //    private int awayPenaltySeconds3;
-
-    public HockeyScoreBoard(String homeName, String awayName, String description, int minutes, int seconds) {
-        this.homeName = homeName;
-        this.awayName = awayName;
-        this.description = description;
-        this.minutes = minutes;
-        this.seconds = seconds;
-        this.period = 1;
-    }
 }
