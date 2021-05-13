@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>December Market</title>
-    <link href="../static/css/styles.css" th:href="@{../static/css/styles.css}" rel="stylesheet" />
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
 </head>
 
 <body>
@@ -16,21 +16,21 @@
     </header>
     <div class="score-board_body">
         <div class="score-board_team">
-            <span th:text="${board.get().getHomeName()}"/>
+            <span th:text="${board.homeName}"/>
         </div>
         <div class="score-board_score">
-            <span th:text="${board.get().getHomeScore()}"/>
+            <span th:text="${homeScore}"/>
             <span>VS</span>
-            <span>0</span>
+            <span th:text="${awayScore}"/>
         </div>
         <div class="score-board_team">
-            <span th:text="${board.get().getAwayName()}"/>
+            <span th:text="${board.awayName}"/>
         </div>
     </div>
     <footer class="score-board_footer">
         <div class="score-board_timer">
       <span>
-        00:00
+        <label th:text="${minutes} + ':' + ${seconds}"/>
       </span>
         </div>
     </footer>

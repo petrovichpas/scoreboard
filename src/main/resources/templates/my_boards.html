@@ -1,10 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
     <title>Title</title>
 </head>
-<body>
 
+<body>
+    <table class="table table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th>Id</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="board : ${boards}">
+                <td th:text="${board.getId()}"/>
+                <td th:text="${board.getDescription()}"/>
+                <td>
+                    <a th:href="@{'/hockey/board/' + ${board.getId()}}" class="btn btn-primary">Open</a>
+                    <a th:href="@{'/hockey/broadcast/' + ${board.getId()}}"  target="_blank" class="btn btn-primary">Broadcast</a>
+                    <a th:href="@{'/hockey/edit/' + ${board.getId()}}" class="btn btn-primary">Edit</a>
+
+                    <form th:action="@{/hockey/delete}" method="POST" style="display: inline">
+                        <input th:value="${board.id}" name="id" type="hidden" class="form-control">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{'/hockey/create'}" class="btn btn-primary">Create board</a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 </body>
 </html>

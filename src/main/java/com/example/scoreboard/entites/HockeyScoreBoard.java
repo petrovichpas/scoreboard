@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "hhh")
+@Table(name = "hockeySB")
 @Data
 @NoArgsConstructor
 public class HockeyScoreBoard {
@@ -18,9 +18,13 @@ public class HockeyScoreBoard {
     private String homeName, awayName, description;
 
     @Column(nullable = false, length = 2)
-    private int homeScore, awayScore, minutes, seconds;
+    private int minutes, seconds;
 
-    @Column(nullable = false, length = 1)
-    private int period;
-
+//    public HockeyScoreBoard(String homeName, String awayName, String description, int minutes) {
+//        this.homeName = homeName;
+//        this.awayName = awayName;
+//        this.description = description;
+//        this.minutes = minutes;
+//        this.seconds = 0;
+//    }
 }

@@ -2,9 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
     <title>Title</title>
 </head>
 <body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <header class="card-header">
+                        <h4 class="card-title mt-2"><span>Edit board</span></h4>
+                    </header>
+                    <article class="card-body">
 
+                        <form th:action="@{/hockey/save}" method="POST">
+                            <input th:value="${board.id}" name="id" type="hidden" class="form-control">
+
+                            <div class="col form-group">
+                                <label>Наименование</label>
+                                <input th:value="${board.homeName}" name="homeName" type="text" class="form-control" placeholder="Название">
+                            </div>
+
+                            <div class="col form-group">
+                                <label>Название</label>
+                                <input th:field="${board.awayName}" name="awayName" type="text" class="form-control" placeholder="Название">
+                            </div>
+
+                            <div class="col form-group">
+                                <label>Time in minutes</label>
+                                <input th:field="${board.minutes}" name="minutes" type="number" class="form-control">
+                            </div>
+
+                            <div class="col form-group">
+                                <label>Описание</label>
+                                <input th:field="${board.description}" name="description" type="text" class="form-control" placeholder="Описание">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block">Save</button>
+                        </form>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 </body>
 </html>

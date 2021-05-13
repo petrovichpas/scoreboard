@@ -11,9 +11,22 @@
 </head>
 
 <body>
-<label>Наименование</label>
-<span th:text="${board.get().getHomeName()}"/>
+<table class="table table-hover">
+    <tbody>
+    <tr>
+        <td th:text="${board.homeName}"/>
+        <td th:text="${minutes} + ':' + ${seconds}"/>
+        <td th:text="${board.awayName}"/>
+    </tr>
 
+    <tr>
+        <td th:text="${homeScore}"/>
+        <td th:text="${period}"/>
+        <td th:text="${awayScore}"/>
+    </tr>
+    </tbody>
+</table>
 
+<a th:href="@{'/hockey/create'}" class="btn btn-primary">Start</a>
 </body>
 </html>

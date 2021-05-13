@@ -11,23 +11,6 @@
 </head>
 
 <body>
-    <table class="table table-hover">
-        <thead class="thead-light">
-        <tr>
-            <th>Название товара</th>
-            <th>Количество</th>
-            <th>Цена</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="board : ${boards}">
-            <td th:text="${board.getId()}"/>
-            <td th:text="${board.getDescription()}"/>
-            <td th:text="${board.getPeriod()}"/>
-        </tr>
-        </tbody>
-    </table>
-
 
 </body>
 </html>
