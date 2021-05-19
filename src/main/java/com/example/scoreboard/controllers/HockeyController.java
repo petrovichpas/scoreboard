@@ -10,7 +10,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.management.timer.Timer;
+import javax.transaction.Transactional;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 @Controller
@@ -18,6 +22,11 @@ import java.util.List;
 public class HockeyController {
 
     private HockeyScoreBoardRepository hockeyScoreBoardRepository;
+
+    @Autowired
+    public HockeyController(HockeyScoreBoardRepository hockeyScoreBoardRepository) {
+        this.hockeyScoreBoardRepository = hockeyScoreBoardRepository;
+    }
 
     @Getter
     @Setter
@@ -32,10 +41,7 @@ public class HockeyController {
     @Setter
     private String homePenaltyNumber1, homePenaltyNumber2, homePenaltyNumber3, awayPenaltyNumber1, awayPenaltyNumber2, awayPenaltyNumber3;
 
-    @Autowired
-    public HockeyController(HockeyScoreBoardRepository hockeyScoreBoardRepository) {
-        this.hockeyScoreBoardRepository = hockeyScoreBoardRepository;
-    }
+
 
     @GetMapping("/boards")
     public String showBoards(Model model) {
@@ -57,6 +63,7 @@ public class HockeyController {
         model.addAttribute("homeScore", homeScore);
         model.addAttribute("period", period);
         model.addAttribute("awayScore", awayScore);
+        model.addAttribute("ss", ss);
         return "admin_board";
     }
 
@@ -78,6 +85,23 @@ public class HockeyController {
         return "redirect:/hockey/boards";
     }
 
+    @PostMapping("/plus")
+    @ResponseBody
+    public int plus() {
+        return ++homeScore;
+    }
+
+    @GetMapping("/seconds")
+    @ResponseBody
+    public int seconds() {
+        return seconds;
+    }
+    @GetMapping("/minutes")
+    @ResponseBody
+    public int minutes() {
+        return minutes;
+    }
+
     @GetMapping("/broadcast/{id}")
     public String broadcast(Model model, @PathVariable Long id) {
         model.addAttribute("board", hockeyScoreBoardRepository.findById(id).get());
@@ -87,5 +111,64 @@ public class HockeyController {
         model.addAttribute("awayScore", awayScore);
         model.addAttribute("period", period);
         return "broadcast";
+    }
+    String ss = "Start";
+    Runnable forwardTask = () -> {
+//        while (ss.equals("Stop")) {
+//            try {
+//                TimeUnit.SECONDS.sleep(1);
+        if (ss.equals("Stop")){
+
+            if (minutes < 20 && seconds == 59) {
+                minutes++;
+                seconds = 0;
+            } else if (minutes == 19 && seconds == 59) {
+                minutes = 0;
+                seconds = 0;
+                period++;
+                ss = "Start";
+            } else seconds++;
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+        }
+    };
+
+//    Runnable countdownTask = () -> {
+//        while (ss.equals("Stop")) {
+//            try {
+//                TimeUnit.SECONDS.sleep(1);
+//
+//                if (hockeyScoreBoard.getMinutes() > 0 && hockeyScoreBoard.getSeconds() == 0) {
+//                    hockeyScoreBoard.setMinutes(hockeyScoreBoard.getMinutes() - 1);
+//                    hockeyScoreBoard.setSeconds(59);
+//                } else if (hockeyScoreBoard.getMinutes() == 0 && hockeyScoreBoard.getSeconds() == 0){
+//                    hockeyScoreBoard.setMinutes(times.get(0));
+//                    hockeyScoreBoard.setPeriod(hockeyScoreBoard.getPeriod() + 1);
+//                    ss = "Start";
+//                } else hockeyScoreBoard.setSeconds(hockeyScoreBoard.getSeconds() - 1);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
+//    };
+
+ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
+    boolean f = true;
+
+    @PostMapping("/start")
+    @ResponseBody
+    public void start() {
+        if (ss.equals("Start")) {
+            ss = "Stop";
+//            if (countdown) executorService.execute(countdownTask);
+            if (f){
+                f = false;
+                if (countdown) scheduledExecutorService.scheduleAtFixedRate(forwardTask,1,1, TimeUnit.SECONDS);
+                    //            else executorService.execute(forwardTask);
+                else scheduledExecutorService.scheduleAtFixedRate(forwardTask,1,1, TimeUnit.SECONDS);
+            }
+        } else ss = "Start";
     }
 }

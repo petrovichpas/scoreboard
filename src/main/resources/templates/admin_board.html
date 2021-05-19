@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-
+    <script th:src="@{/js/main.js}"></script>
 </head>
 
 <body>
@@ -15,18 +15,38 @@
     <tbody>
     <tr>
         <td th:text="${board.homeName}"/>
-        <td th:text="${minutes} + ':' + ${seconds}"/>
+        <td>
+            <button type="button" class="btn btn-primary">+</button>
+            <button type="button" class="btn btn-primary">-</button>
+<!--            <label id="seconds" th:text="${minutes} + ':' + ${seconds}"/>-->
+            <label id="minutes" th:text="${minutes}"/> : <label id="seconds" th:text="${seconds}"/>
+            <button type="button" class="btn btn-primary">+</button>
+            <button type="button" class="btn btn-primary">-</button>
+        </td>
         <td th:text="${board.awayName}"/>
     </tr>
 
     <tr>
-        <td th:text="${homeScore}"/>
-        <td th:text="${period}"/>
-        <td th:text="${awayScore}"/>
+        <td>
+            <label id="homeScore" th:text="${homeScore}"/>
+            <button id="plo" type="button" class="btn btn-primary">+</button>
+            <button type="button" class="btn btn-primary">-</button>
+        </td>
+        <td>
+            <label th:text="${period}"/>
+            <button type="button" class="btn btn-primary">+</button>
+            <button type="button" class="btn btn-primary">-</button>
+        </td>
+        <td>
+            <label th:text="${awayScore}"/>
+            <button type="button" class="btn btn-primary">+</button>
+            <button type="button" class="btn btn-primary">-</button>
+        </td>
     </tr>
     </tbody>
 </table>
 
-<a th:href="@{'/hockey/create'}" class="btn btn-primary">Start</a>
+<a id="start" class="btn btn-primary" th:text="${ss}"/>
+
 </body>
 </html>
