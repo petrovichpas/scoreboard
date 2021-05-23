@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.management.timer.Timer;
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -86,9 +88,16 @@ public class HockeyController {
     }
 
     @PostMapping("/plus")
-    @ResponseBody
-    public int plus() {
-        return ++homeScore;
+//    @ResponseBody
+    public String plus(@RequestParam("action") String param) {
+        System.out.println(param);
+        switch (param) {
+            case "plus" : ++homeScore;
+            break;
+            case "minus" : --homeScore;
+            break;
+        }
+        return "redirect:/hockey/board/1";
     }
 
     @GetMapping("/seconds")

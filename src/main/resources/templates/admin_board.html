@@ -29,8 +29,10 @@
     <tr>
         <td>
             <label id="homeScore" th:text="${homeScore}"/>
-            <button id="plo" type="button" class="btn btn-primary">+</button>
-            <button type="button" class="btn btn-primary">-</button>
+            <form th:action="@{/hockey/plus}" method="POST">
+            <button name="action" value="plus" type="submit" class="btn btn-primary">+</button>
+            <button name="action" value="minus" type="submit" class="btn btn-primary">-</button>
+            </form>
         </td>
         <td>
             <label th:text="${period}"/>
