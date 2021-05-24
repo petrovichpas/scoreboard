@@ -90,25 +90,47 @@ public class HockeyController {
     @PostMapping("/plus")
 //    @ResponseBody
     public String plus(@RequestParam("action") String param) {
-        System.out.println(param);
         switch (param) {
-            case "plus" : ++homeScore;
-            break;
-            case "minus" : --homeScore;
-            break;
+            case "minutesPlus" : ++minutes;
+                break;
+            case "minutesMinus" : --minutes;
+                break;
+            case "secondsPlus" : ++seconds;
+                break;
+            case "secondsMinus" : --seconds;
+                break;
+            case "homeScorePlus" : ++homeScore;
+                break;
+            case "homeScoreMinus" : --homeScore;
+                break;
+            case "periodPlus" : ++period;
+                break;
+            case "periodMinus" : --period;
+                break;
+            case "awayScorePlus" : ++awayScore;
+                break;
+            case "awayScoreMinus" : --awayScore;
+                break;
         }
         return "redirect:/hockey/board/1";
     }
 
-    @GetMapping("/seconds")
+//    @GetMapping("/seconds")
+//    @ResponseBody
+//    public int seconds() {
+//        return seconds;
+//    }
+//
+//    @GetMapping("/minutes")
+//    @ResponseBody
+//    public int minutes() {
+//        return minutes;
+//    }
+
+    @GetMapping("/time")
     @ResponseBody
-    public int seconds() {
-        return seconds;
-    }
-    @GetMapping("/minutes")
-    @ResponseBody
-    public int minutes() {
-        return minutes;
+    public int[] time() {
+        return new int[]{homeScore, minutes, seconds, awayScore};
     }
 
     @GetMapping("/broadcast/{id}")

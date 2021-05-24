@@ -5,6 +5,8 @@
     <meta charset="utf-8"/>
     <title>December Market</title>
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
 </head>
 
 <body>
@@ -19,9 +21,9 @@
             <span th:text="${board.homeName}"/>
         </div>
         <div class="score-board_score">
-            <span th:text="${homeScore}"/>
+            <span id="homeScore" th:text="${homeScore}"/>
             <span>VS</span>
-            <span th:text="${awayScore}"/>
+            <span id="awayScore" th:text="${awayScore}"/>
         </div>
         <div class="score-board_team">
             <span th:text="${board.awayName}"/>
@@ -30,7 +32,7 @@
     <footer class="score-board_footer">
         <div class="score-board_timer">
       <span>
-        <label th:text="${minutes} + ':' + ${seconds}"/>
+        <label id="time" th:text="${#numbers.formatInteger(minutes, 2) + ':' + #numbers.formatInteger(seconds, 2)}"/>
       </span>
         </div>
     </footer>

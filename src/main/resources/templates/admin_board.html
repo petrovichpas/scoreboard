@@ -11,43 +11,41 @@
 </head>
 
 <body>
-<table class="table table-hover">
-    <tbody>
-    <tr>
-        <td th:text="${board.homeName}"/>
-        <td>
-            <button type="button" class="btn btn-primary">+</button>
-            <button type="button" class="btn btn-primary">-</button>
-<!--            <label id="seconds" th:text="${minutes} + ':' + ${seconds}"/>-->
-            <label id="minutes" th:text="${minutes}"/> : <label id="seconds" th:text="${seconds}"/>
-            <button type="button" class="btn btn-primary">+</button>
-            <button type="button" class="btn btn-primary">-</button>
-        </td>
-        <td th:text="${board.awayName}"/>
-    </tr>
+<form th:action="@{/hockey/plus}" method="POST">
+    <table class="table table-hover">
+        <tbody>
+        <tr>
+            <td th:text="${board.homeName}"/>
+            <td>
+                <button name="action" value="minutesPlus" type="submit" class="btn btn-primary">+</button>
+                <button name="action" value="minutesMinus" type="submit" class="btn btn-primary">-</button>
+                <label id="time" th:text="${#numbers.formatInteger(minutes, 2) + ':' + #numbers.formatInteger(seconds, 2)}"/>
+                <button name="action" value="secondsPlus" type="submit" class="btn btn-primary">+</button>
+                <button name="action" value="secondsMinus" type="submit" class="btn btn-primary">-</button>
+            </td>
+            <td th:text="${board.awayName}"/>
+        </tr>
 
-    <tr>
-        <td>
-            <label id="homeScore" th:text="${homeScore}"/>
-            <form th:action="@{/hockey/plus}" method="POST">
-            <button name="action" value="plus" type="submit" class="btn btn-primary">+</button>
-            <button name="action" value="minus" type="submit" class="btn btn-primary">-</button>
-            </form>
-        </td>
-        <td>
-            <label th:text="${period}"/>
-            <button type="button" class="btn btn-primary">+</button>
-            <button type="button" class="btn btn-primary">-</button>
-        </td>
-        <td>
-            <label th:text="${awayScore}"/>
-            <button type="button" class="btn btn-primary">+</button>
-            <button type="button" class="btn btn-primary">-</button>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
+        <tr>
+            <td>
+                <label id="homeScore" th:text="${homeScore}"/>
+                <button name="action" value="homeScorePlus" type="submit" class="btn btn-primary">+</button>
+                <button name="action" value="homeScoreMinus" type="submit" class="btn btn-primary">-</button>
+            </td>
+            <td>
+                <label th:text="${period}"/>
+                <button name="action" value="periodPlus" type="submit" class="btn btn-primary">+</button>
+                <button name="action" value="periodMinus" type="submit" class="btn btn-primary">-</button>
+            </td>
+            <td>
+                <label id="awayScore" th:text="${awayScore}"/>
+                <button name="action" value="awayScorePlus" type="submit" class="btn btn-primary">+</button>
+                <button name="action" value="awayScoreMinus" type="submit" class="btn btn-primary">-</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>
 <a id="start" class="btn btn-primary" th:text="${ss}"/>
 
 </body>

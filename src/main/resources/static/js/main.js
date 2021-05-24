@@ -1,16 +1,16 @@
 $(document).ready(() => {
-    $("#plo").click(e => {
-        $.ajax({
-            type: "POST",
-            url: "/hockey/plus",
-            success: result => {
-                $("#homeScore").text(result)
-            },
-            error: message => {
-                alert(message)
-            }
-        });
-    });
+    // $("#plo").click(e => {
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "/hockey/plus",
+    //         success: result => {
+    //             $("#homeScore").text(result)
+    //         },
+    //         error: message => {
+    //             alert(message)
+    //         }
+    //     });
+    // });
 
     $("#start").click(e => {
         $.ajax({
@@ -25,26 +25,39 @@ $(document).ready(() => {
         });
     });
 
-    function seconds() {
+    // function seconds() {
+    //     $.ajax({
+    //         type: "GET",
+    //         url: "/hockey/seconds",
+    //         success: result => {
+    //             $("#seconds").text(String(result).padStart(2, '0'))
+    //         }
+    //     });
+    // }
+    //
+    // function minutes() {
+    //     $.ajax({
+    //         type: "GET",
+    //         url: "/hockey/minutes",
+    //         success: result => {
+    //             $("#minutes").text(String(result).padStart(2, '0'))
+    //         }
+    //     });
+    // }
+
+    function time() {
         $.ajax({
             type: "GET",
-            url: "/hockey/seconds",
+            url: "/hockey/time",
             success: result => {
-                $("#seconds").text(result)
+                $("#homeScore").text(result[0])
+                $("#time").text(String(result[1]).padStart(2, '0') +':' + String(result[2]).padStart(2, '0'))
+                $("#awayScore").text(result[3])
             }
         });
     }
 
-    function minutes() {
-        $.ajax({
-            type: "GET",
-            url: "/hockey/minutes",
-            success: result => {
-                $("#minutes").text(result)
-            }
-        });
-    }
-
-    setInterval(seconds,1000);
-    setInterval(minutes,1000);
+    // setInterval(seconds,1000);
+    // setInterval(minutes,1000);
+    setInterval(time,1000);
 });
