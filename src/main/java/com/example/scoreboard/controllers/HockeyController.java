@@ -45,6 +45,11 @@ public class HockeyController {
 
 
 
+    @GetMapping("/main")
+    public String main() {
+        return "index";
+    }
+
     @GetMapping("/boards")
     public String showBoards(Model model) {
         model.addAttribute("boards", hockeyScoreBoardRepository.findAll());
@@ -89,7 +94,7 @@ public class HockeyController {
 
     @PostMapping("/plus")
 //    @ResponseBody
-    public String plus(@RequestParam("action") String param) {
+    public String plus(@RequestParam("action") String param, @RequestParam("id") Long id) {
         switch (param) {
             case "minutesPlus" : ++minutes;
                 break;
@@ -112,7 +117,7 @@ public class HockeyController {
             case "awayScoreMinus" : --awayScore;
                 break;
         }
-        return "redirect:/hockey/board/1";
+        return "redirect:/hockey/board/" + id;
     }
 
 //    @GetMapping("/seconds")
