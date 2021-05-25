@@ -8,12 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.DispatcherServlet;
 
-import javax.management.timer.Timer;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +27,7 @@ public class HockeyController {
 
     @Getter
     @Setter
-    private boolean countdown = false;
+    private boolean isCountdownModeSelected = false;
 
     @Getter
     @Setter
@@ -41,9 +36,10 @@ public class HockeyController {
 
     @Getter
     @Setter
-    private String homePenaltyNumber1, homePenaltyNumber2, homePenaltyNumber3, awayPenaltyNumber1, awayPenaltyNumber2, awayPenaltyNumber3;
+    private String startStop = "Start", homePenaltyNumber1, homePenaltyNumber2, homePenaltyNumber3, awayPenaltyNumber1, awayPenaltyNumber2, awayPenaltyNumber3;
 
-
+    ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
+    boolean isFirstStart = true;
 
     @GetMapping("/main")
     public String main() {
@@ -70,7 +66,7 @@ public class HockeyController {
         model.addAttribute("homeScore", homeScore);
         model.addAttribute("period", period);
         model.addAttribute("awayScore", awayScore);
-        model.addAttribute("ss", ss);
+        model.addAttribute("startStop", startStop);
         return "admin_board";
     }
 
@@ -135,7 +131,7 @@ public class HockeyController {
     @GetMapping("/time")
     @ResponseBody
     public int[] time() {
-        return new int[]{homeScore, minutes, seconds, awayScore};
+        return new int[]{homeScore, minutes, seconds, awayScore, period};
     }
 
     @GetMapping("/broadcast/{id}")
@@ -148,21 +144,21 @@ public class HockeyController {
         model.addAttribute("period", period);
         return "broadcast";
     }
-    String ss = "Start";
+
+
+
     Runnable forwardTask = () -> {
 //        while (ss.equals("Stop")) {
 //            try {
 //                TimeUnit.SECONDS.sleep(1);
-        if (ss.equals("Stop")){
+        if (startStop.equals("Stop")){
 
-            if (minutes < 20 && seconds == 59) {
+            if (minutes < 20 && seconds >= 59) {
                 minutes++;
                 seconds = 0;
-            } else if (minutes == 19 && seconds == 59) {
-                minutes = 0;
-                seconds = 0;
+            } else if (minutes == 20 && seconds == 0) {
                 period++;
-                ss = "Start";
+                startStop = "Start";
             } else seconds++;
 //            } catch (InterruptedException e) {
 //                e.printStackTrace();
@@ -170,7 +166,7 @@ public class HockeyController {
         }
     };
 
-//    Runnable countdownTask = () -> {
+    Runnable countdownTask = () -> {
 //        while (ss.equals("Stop")) {
 //            try {
 //                TimeUnit.SECONDS.sleep(1);
@@ -188,23 +184,20 @@ public class HockeyController {
 //            }
 //
 //        }
-//    };
+    };
 
-ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
-    boolean f = true;
-
-    @PostMapping("/start")
+    @GetMapping("/start")
     @ResponseBody
-    public void start() {
-        if (ss.equals("Start")) {
-            ss = "Stop";
+    public String start() {
+        if (startStop.equals("Start")) {
+            startStop = "Stop";
 //            if (countdown) executorService.execute(countdownTask);
-            if (f){
-                f = false;
-                if (countdown) scheduledExecutorService.scheduleAtFixedRate(forwardTask,1,1, TimeUnit.SECONDS);
+            if (isFirstStart){
+                isFirstStart = false;
+               scheduledExecutorService.scheduleAtFixedRate(isCountdownModeSelected ? countdownTask : forwardTask,1,1, TimeUnit.SECONDS);
                     //            else executorService.execute(forwardTask);
-                else scheduledExecutorService.scheduleAtFixedRate(forwardTask,1,1, TimeUnit.SECONDS);
             }
-        } else ss = "Start";
+        } else startStop = "Start";
+        return startStop;
     }
 }

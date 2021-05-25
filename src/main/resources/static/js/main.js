@@ -12,12 +12,12 @@ $(document).ready(() => {
     //     });
     // });
 
-    $("#start").click(e => {
+    $("#startStop").click(e => {
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: "/hockey/start",
             success: result => {
-                $("#seconds").text(result)
+                $("#startStop").text(result)
             },
             error: message => {
                 alert(message)
@@ -53,6 +53,7 @@ $(document).ready(() => {
                 $("#homeScore").text(result[0])
                 $("#time").text(String(result[1]).padStart(2, '0') +':' + String(result[2]).padStart(2, '0'))
                 $("#awayScore").text(result[3])
+                $("#period").text(result[4])
             }
         });
     }
