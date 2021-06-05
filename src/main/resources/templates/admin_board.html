@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>Board</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
@@ -12,6 +13,7 @@
 
 <body>
     <div th:insert="fragments/menu :: menu"></div>
+
     <form th:action="@{/hockey/plus}" method="POST">
         <input th:value="${board.id}" name="id" type="hidden" class="form-control">
         <table class="table table-hover">
@@ -35,7 +37,7 @@
                     <button name="action" value="homeScoreMinus" type="submit" class="btn btn-primary">-</button>
                 </td>
                 <td>
-                    <label th:text="${period}"/>
+                    <label id="period" th:text="${period}"/>
                     <button name="action" value="periodPlus" type="submit" class="btn btn-primary">+</button>
                     <button name="action" value="periodMinus" type="submit" class="btn btn-primary">-</button>
                 </td>
@@ -48,7 +50,8 @@
             </tbody>
         </table>
     </form>
-    <a id="start" class="btn btn-primary" th:text="${ss}"/>
+
+    <a id="startStop" class="btn btn-primary" th:text="${startStop}"/>
 
 </body>
 </html>
