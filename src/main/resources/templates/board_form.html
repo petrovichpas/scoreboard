@@ -21,23 +21,23 @@
                             <input th:value="${board.id}" name="id" type="hidden" class="form-control">
 
                             <div class="col form-group">
-                                <label>Наименование</label>
+                                <label>Home</label>
                                 <input th:value="${board.homeName}" name="homeName" type="text" class="form-control" placeholder="Название">
                             </div>
 
                             <div class="col form-group">
-                                <label>Название</label>
-                                <input th:field="${board.awayName}" name="awayName" type="text" class="form-control" placeholder="Название">
+                                <label>Away</label>
+                                <input th:field="${board.awayName}" name="awayName" type="text" class="form-control">
                             </div>
 
                             <div class="col form-group">
-                                <label>Time in minutes</label>
-                                <input th:field="${board.minutes}" name="minutes" type="number" class="form-control">
+                                <label>Start from</label>
+                                <input th:field="${board.currentTime}" name="currentTime" type="number" class="form-control">
                             </div>
 
                             <div class="col form-group">
-                                <label>Описание</label>
-                                <input th:field="${board.description}" name="description" type="text" class="form-control" placeholder="Описание">
+                                <label>Time in seconds</label>
+                                <input th:field="${board.maxTime}" name="maxTime" type="number" class="form-control">
                             </div>
 
                             <button type="submit" class="btn btn-primary btn-block">Save</button>

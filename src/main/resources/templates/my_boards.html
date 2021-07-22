@@ -22,7 +22,7 @@
         <tbody>
             <tr th:each="board : ${boards}">
                 <td th:text="${board.getId()}"/>
-                <td th:text="${board.getDescription()}"/>
+                <td th:text="${board.homeName} + ' - ' + ${board.awayName}"/>
                 <td>
                     <a th:href="@{'/hockey/board/' + ${board.getId()}}" class="btn btn-primary">Open</a>
                     <a th:href="@{'/hockey/broadcast/' + ${board.getId()}}"  target="_blank" class="btn btn-primary">Broadcast</a>

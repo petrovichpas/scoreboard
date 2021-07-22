@@ -1,45 +1,20 @@
 package com.example.scoreboard.controllers;
 
 import com.example.scoreboard.entites.HockeyScoreBoard;
-import com.example.scoreboard.repositories.HockeyScoreBoardRepository;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.scoreboard.service.HockeyService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/hockey")
 public class HockeyController {
-
-    private HockeyScoreBoardRepository hockeyScoreBoardRepository;
-
-    @Autowired
-    public HockeyController(HockeyScoreBoardRepository hockeyScoreBoardRepository) {
-        this.hockeyScoreBoardRepository = hockeyScoreBoardRepository;
-    }
-
-    @Getter
-    @Setter
-    private boolean isCountdownModeSelected = false;
-
-    @Getter
-    @Setter
-    private int homeScore, awayScore, period, minutes, seconds, homePenaltyMinutes1, homePenaltyMinutes2, homePenaltyMinutes3, awayPenaltyMinutes1, awayPenaltyMinutes2,
-            awayPenaltyMinutes3, homePenaltySeconds1, homePenaltySeconds2, homePenaltySeconds3, awayPenaltySeconds1, awayPenaltySeconds2, awayPenaltySeconds3;
-
-    @Getter
-    @Setter
-    private String startStop = "Start", homePenaltyNumber1, homePenaltyNumber2, homePenaltyNumber3, awayPenaltyNumber1, awayPenaltyNumber2, awayPenaltyNumber3;
-
-    ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
-    boolean isFirstStart = true;
+    private final HockeyService hockeyService;
 
     @GetMapping("/main")
     public String main() {
@@ -48,7 +23,7 @@ public class HockeyController {
 
     @GetMapping("/boards")
     public String showBoards(Model model) {
-        model.addAttribute("boards", hockeyScoreBoardRepository.findAll());
+        model.addAttribute("boards", hockeyService.findAll());
         return "my_boards";
     }
 
@@ -60,61 +35,45 @@ public class HockeyController {
 
     @GetMapping("/board/{id}")
     public String openBoard(Model model, @PathVariable Long id) {
-        model.addAttribute("board", hockeyScoreBoardRepository.findById(id).get());
-        model.addAttribute("minutes", minutes);
-        model.addAttribute("seconds", seconds);
-        model.addAttribute("homeScore", homeScore);
-        model.addAttribute("period", period);
-        model.addAttribute("awayScore", awayScore);
-        model.addAttribute("startStop", startStop);
+        model.addAttribute("board", hockeyService.findById(id));
+        model.addAttribute("ttt", hockeyService.getCurrentTime());
+        model.addAttribute("isCountdownModeSelected", hockeyService.isCountdownModeSelected());
+        model.addAttribute("startStop", hockeyService.getStartStop());
         return "admin_board";
     }
 
     @GetMapping("/edit/{id}")
     public String editBoard(Model model, @PathVariable Long id) {
-        model.addAttribute("board", hockeyScoreBoardRepository.findById(id).get());
+        model.addAttribute("board", hockeyService.findById(id));
         return "board_form";
     }
 
     @PostMapping("/save")
     public String saveOrUpdateBoard(@ModelAttribute HockeyScoreBoard board) {
-        hockeyScoreBoardRepository.save(board);
+        hockeyService.save(board);
         return "redirect:/hockey/boards";
     }
 
     @PostMapping("/delete")
     public String deleteBoard(@RequestParam("id") Long id) {
-        hockeyScoreBoardRepository.delete(hockeyScoreBoardRepository.findById(id).get());
+        hockeyService.deleteById(id);
         return "redirect:/hockey/boards";
     }
 
     @PostMapping("/plus")
 //    @ResponseBody
     public String plus(@RequestParam("action") String param, @RequestParam("id") Long id) {
-        switch (param) {
-            case "minutesPlus" : ++minutes;
-                break;
-            case "minutesMinus" : --minutes;
-                break;
-            case "secondsPlus" : ++seconds;
-                break;
-            case "secondsMinus" : --seconds;
-                break;
-            case "homeScorePlus" : ++homeScore;
-                break;
-            case "homeScoreMinus" : --homeScore;
-                break;
-            case "periodPlus" : ++period;
-                break;
-            case "periodMinus" : --period;
-                break;
-            case "awayScorePlus" : ++awayScore;
-                break;
-            case "awayScoreMinus" : --awayScore;
-                break;
-        }
+        hockeyService.plusOrMinusOne(param, id);
         return "redirect:/hockey/board/" + id;
     }
+
+
+//    @PostMapping("/pluss")
+//    @ResponseBody
+//    public int pluss() {
+//        return i.incrementAndGet();
+//    }
+
 
 //    @GetMapping("/seconds")
 //    @ResponseBody
@@ -130,74 +89,52 @@ public class HockeyController {
 
     @GetMapping("/time")
     @ResponseBody
-    public int[] time() {
-        return new int[]{homeScore, minutes, seconds, awayScore, period};
+    public Integer[] time() {
+        Integer[] arr = new Integer[]{hockeyService.getHockeyScoreBoardRepository().findById(2L).get().getHomeScore(),
+                hockeyService.getCurrentTime(),
+                hockeyService.getHockeyScoreBoardRepository().findById(2L).get().getAwayScore(),
+                hockeyService.getHockeyScoreBoardRepository().findById(2L).get().getPeriod()};
+        return arr;
     }
 
     @GetMapping("/broadcast/{id}")
     public String broadcast(Model model, @PathVariable Long id) {
-        model.addAttribute("board", hockeyScoreBoardRepository.findById(id).get());
-        model.addAttribute("minutes", minutes);
-        model.addAttribute("seconds", seconds);
-        model.addAttribute("homeScore", homeScore);
-        model.addAttribute("awayScore", awayScore);
-        model.addAttribute("period", period);
+        model.addAttribute("board", hockeyService.findById(id));
         return "broadcast";
     }
 
 
-
-    Runnable forwardTask = () -> {
-//        while (ss.equals("Stop")) {
-//            try {
-//                TimeUnit.SECONDS.sleep(1);
-        if (startStop.equals("Stop")){
-
-            if (minutes < 20 && seconds >= 59) {
-                minutes++;
-                seconds = 0;
-            } else if (minutes == 20 && seconds == 0) {
-                period++;
-                startStop = "Start";
-            } else seconds++;
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-        }
-    };
-
-    Runnable countdownTask = () -> {
-//        while (ss.equals("Stop")) {
-//            try {
-//                TimeUnit.SECONDS.sleep(1);
-//
-//                if (hockeyScoreBoard.getMinutes() > 0 && hockeyScoreBoard.getSeconds() == 0) {
-//                    hockeyScoreBoard.setMinutes(hockeyScoreBoard.getMinutes() - 1);
-//                    hockeyScoreBoard.setSeconds(59);
-//                } else if (hockeyScoreBoard.getMinutes() == 0 && hockeyScoreBoard.getSeconds() == 0){
-//                    hockeyScoreBoard.setMinutes(times.get(0));
-//                    hockeyScoreBoard.setPeriod(hockeyScoreBoard.getPeriod() + 1);
-//                    ss = "Start";
-//                } else hockeyScoreBoard.setSeconds(hockeyScoreBoard.getSeconds() - 1);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//
-//        }
-    };
-
-    @GetMapping("/start")
+    @PostMapping("/start")
+    @Transactional
     @ResponseBody
     public String start() {
-        if (startStop.equals("Start")) {
-            startStop = "Stop";
-//            if (countdown) executorService.execute(countdownTask);
-            if (isFirstStart){
-                isFirstStart = false;
-               scheduledExecutorService.scheduleAtFixedRate(isCountdownModeSelected ? countdownTask : forwardTask,1,1, TimeUnit.SECONDS);
-                    //            else executorService.execute(forwardTask);
+        if (hockeyService.getStartStop().equals("Start")) {
+            hockeyService.setStartStop("Stop");
+
+            if (hockeyService.isFirstStart()) {
+                hockeyService.setFirstStart(false);
+                hockeyService.getScheduledExecutorService().scheduleAtFixedRate(hockeyService.isCountdownModeSelected() ?
+                        () -> {
+                            if (hockeyService.getStartStop().equals("Stop")) {
+                                if (hockeyService.getCurrentTime() == 0) {
+                                    hockeyService.setCurrentTime(hockeyService.getMaxTime());
+                                    hockeyService.setStartStop("Start");
+                                } else hockeyService.setCurrentTime(hockeyService.getCurrentTime() - 1);
+                            }
+                        } :
+                        () -> {
+                            if (hockeyService.getStartStop().equals("Stop")) {
+                                if (hockeyService.getCurrentTime() == hockeyService.getMaxTime()) {
+                                    hockeyService.setCurrentTime(0);
+                                    hockeyService.setStartStop("Start");
+                                } else hockeyService.setCurrentTime(hockeyService.getCurrentTime() + 1);
+                            }
+                        },1,1, TimeUnit.SECONDS);
             }
-        } else startStop = "Start";
-        return startStop;
+        } else {
+            hockeyService.setStartStop("Start");
+            hockeyService.findById(2L).setCurrentTime(hockeyService.getCurrentTime());
+        }
+        return hockeyService.getStartStop();
     }
 }

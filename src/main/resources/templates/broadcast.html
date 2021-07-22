@@ -21,9 +21,9 @@
             <span th:text="${board.homeName}"/>
         </div>
         <div class="score-board_score">
-            <span id="homeScore" th:text="${homeScore}"/>
-            <span id="period" th:text="${period}"/>
-            <span id="awayScore" th:text="${awayScore}"/>
+            <span id="homeScore" th:text="${board.homeScore}"/>
+            <span id="period" th:text="${board.period}"/>
+            <span id="awayScore" th:text="${board.awayScore}"/>
         </div>
         <div class="score-board_team">
             <span th:text="${board.awayName}"/>
@@ -32,7 +32,7 @@
     <footer class="score-board_footer">
         <div class="score-board_timer">
       <span>
-        <label id="time" th:text="${#numbers.formatInteger(minutes, 2) + ':' + #numbers.formatInteger(seconds, 2)}"/>
+        <label id="time" th:text="${#numbers.formatInteger(board.currentTime/60, 2) + ':' + #numbers.formatInteger(board.currentTime%60, 2)}"/>
       </span>
         </div>
     </footer>

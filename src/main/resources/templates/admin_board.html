@@ -15,43 +15,53 @@
     <div th:insert="fragments/menu :: menu"></div>
 
     <form th:action="@{/hockey/plus}" method="POST">
-        <input th:value="${board.id}" name="id" type="hidden" class="form-control">
-        <table class="table table-hover">
+        <input name="id" th:value="${board.id}" type="hidden" class="form-control">
+        <table class="table table-hover" >
             <tbody>
-            <tr>
-                <td th:text="${board.homeName}"/>
-                <td>
-                    <button name="action" value="minutesPlus" type="submit" class="btn btn-primary">+</button>
-                    <button name="action" value="minutesMinus" type="submit" class="btn btn-primary">-</button>
-                    <label id="time" th:text="${#numbers.formatInteger(minutes, 2) + ':' + #numbers.formatInteger(seconds, 2)}"/>
-                    <button name="action" value="secondsPlus" type="submit" class="btn btn-primary">+</button>
-                    <button name="action" value="secondsMinus" type="submit" class="btn btn-primary">-</button>
-                </td>
-                <td th:text="${board.awayName}"/>
-            </tr>
+                <tr>
+                    <td><input th:value="${board.homeName}" name="homeName" type="text" class="form-control"></td>
+                    <td>
+                        <button name="action" value="minutesPlus" type="submit" class="btn btn-primary">+</button>
+                        <button name="action" value="minutesMinus" type="submit" class="btn btn-primary">-</button>
+                        <label id="time" th:text="${#numbers.formatInteger(ttt/60, 2) + ':' + #numbers.formatInteger(ttt%60, 2)}"/>
+                        <button name="action" value="secondsPlus" type="submit" class="btn btn-primary">+</button>
+                        <button name="action" value="secondsMinus" type="submit" class="btn btn-primary">-</button>
+                    </td>
+                    <td><input th:value="${board.awayName}" name="homeName" type="text" class="form-control"></td>
+                </tr>
 
-            <tr>
-                <td>
-                    <label id="homeScore" th:text="${homeScore}"/>
-                    <button name="action" value="homeScorePlus" type="submit" class="btn btn-primary">+</button>
-                    <button name="action" value="homeScoreMinus" type="submit" class="btn btn-primary">-</button>
-                </td>
-                <td>
-                    <label id="period" th:text="${period}"/>
-                    <button name="action" value="periodPlus" type="submit" class="btn btn-primary">+</button>
-                    <button name="action" value="periodMinus" type="submit" class="btn btn-primary">-</button>
-                </td>
-                <td>
-                    <label id="awayScore" th:text="${awayScore}"/>
-                    <button name="action" value="awayScorePlus" type="submit" class="btn btn-primary">+</button>
-                    <button name="action" value="awayScoreMinus" type="submit" class="btn btn-primary">-</button>
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <button id="homeScorePlus" name="action" value="homeScorePlus" type="submit" class="btn btn-primary">+</button>
+                        <label id="homeScore" th:text="${board.homeScore}"/>
+                        <button name="action" value="homeScoreMinus" type="submit" class="btn btn-primary">-</button>
+                    </td>
+                    <td>
+                        <button name="action" value="periodPlus" type="submit" class="btn btn-primary">+</button>
+                        <label id="period" th:text="${board.period}"/>
+                        <button name="action" value="periodMinus" type="submit" class="btn btn-primary">-</button>
+                    </td>
+                    <td>
+                        <button name="action" value="awayScorePlus" type="submit" class="btn btn-primary">+</button>
+                        <label id="awayScore" th:text="${board.awayScore}"/>
+                        <button name="action" value="awayScoreMinus" type="submit" class="btn btn-primary">-</button>
+                    </td>
+                </tr>
             </tbody>
         </table>
+
+        <input type="checkbox" name="isCountdownModeSelected" th:checked="${isCountdownModeSelected}" class=""/>
+<!--        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">-->
+<!--        <label class="form-check-label" for="defaultCheck1">-->
+<!--            Default checkbox-->
+<!--        </label>-->
+        <input th:field="${board.maxTime}" name="maxTime" type="number" class="form-control">
     </form>
 
-    <a id="startStop" class="btn btn-primary" th:text="${startStop}"/>
+<!--    <form th:action="@{/hockey/start}" method="POST">-->
+<!--        <input th:value="${board.id}" name="id" type="hidden" class="form-control">-->
+        <button id="startStop" type="submit" class="btn btn-danger" th:text="${startStop}"/>
+<!--    </form>-->
 
 </body>
 </html>
