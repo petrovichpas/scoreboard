@@ -18,7 +18,11 @@
                     <article class="card-body">
 
                         <form th:action="@{/hockey/save}" method="POST">
-                            <input th:value="${board.id}" name="id" type="hidden" class="form-control">
+                            <input th:value="${board.id}" name="id" type="hidden">
+                            <input th:value="${0}" name="homeScore" type="hidden">
+                            <input th:value="${1}" name="period" type="hidden">
+                            <input th:value="${0}" name="awayScore" type="hidden">
+                            <input th:value="${0}" name="currentTime" type="hidden">
 
                             <div class="col form-group">
                                 <label>Home</label>
@@ -28,11 +32,6 @@
                             <div class="col form-group">
                                 <label>Away</label>
                                 <input th:field="${board.awayName}" name="awayName" type="text" class="form-control">
-                            </div>
-
-                            <div class="col form-group">
-                                <label>Start from</label>
-                                <input th:field="${board.currentTime}" name="currentTime" type="number" class="form-control">
                             </div>
 
                             <div class="col form-group">

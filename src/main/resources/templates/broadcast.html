@@ -6,37 +6,55 @@
     <title>December Market</title>
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script th:src="@{/js/main.js}"></script>
+<!--    <script th:src="@{/js/main.js}"></script>-->
 </head>
 
 <body>
-<div class="score-board">
-    <header class="score-board_header">
-        <div class="score-board_title">
-            championship
+<input id="id" th:value="${board.id}" type="hidden">
+    <div class="score-board">
+        <header class="score-board_header">
+            <div class="score-board_title">
+                championship
+            </div>
+        </header>
+        <div class="score-board_body">
+            <div class="score-board_team">
+                <span th:text="${board.homeName}"/>
+            </div>
+            <div class="score-board_score">
+                <span id="homeScore" th:text="${board.homeScore}"/>
+                <span id="period" th:text="${board.period}"/>
+                <span id="awayScore" th:text="${board.awayScore}"/>
+            </div>
+            <div class="score-board_team">
+                <span th:text="${board.awayName}"/>
+            </div>
         </div>
-    </header>
-    <div class="score-board_body">
-        <div class="score-board_team">
-            <span th:text="${board.homeName}"/>
-        </div>
-        <div class="score-board_score">
-            <span id="homeScore" th:text="${board.homeScore}"/>
-            <span id="period" th:text="${board.period}"/>
-            <span id="awayScore" th:text="${board.awayScore}"/>
-        </div>
-        <div class="score-board_team">
-            <span th:text="${board.awayName}"/>
-        </div>
+        <footer class="score-board_footer">
+            <div class="score-board_timer">
+          <span>
+            <label id="time" th:text="${#numbers.formatInteger(board.currentTime/60, 2) + ':' + #numbers.formatInteger(board.currentTime%60, 2)}"/>
+          </span>
+            </div>
+        </footer>
     </div>
-    <footer class="score-board_footer">
-        <div class="score-board_timer">
-      <span>
-        <label id="time" th:text="${#numbers.formatInteger(board.currentTime/60, 2) + ':' + #numbers.formatInteger(board.currentTime%60, 2)}"/>
-      </span>
-        </div>
-    </footer>
-</div>
 
+    <script>
+        function time() {
+            $.ajax({
+                type: "GET",
+                url: "/hockey/time",
+                data: {id: document.getElementById('id').value},
+                success: result => {
+                    $("#homeScore").text(result[0])
+                    $("#time").text(String(~~(result[1] / 60)).padStart(2, '0') + ':' + String(result[1] % 60).padStart(2, '0'))
+                    $("#awayScore").text(result[2])
+                    $("#period").text(result[3])
+                }
+            });
+        }
+
+        setInterval(time,1000);
+    </script>
 </body>
 </html>

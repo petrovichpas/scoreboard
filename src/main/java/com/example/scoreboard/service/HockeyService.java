@@ -4,44 +4,31 @@ import com.example.scoreboard.entites.HockeyScoreBoard;
 import com.example.scoreboard.repositories.HockeyScoreBoardRepository;
 import lombok.Data;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Data
 public class HockeyService {
     private final HockeyScoreBoardRepository hockeyScoreBoardRepository;
-//    private HockeyScoreBoard board;
-    private Integer currentTime;
-    private Integer maxTime;
+//    private Integer currentTime;
+//    private Integer maxTime;
     private String startStop = "Start";
     private boolean isCountdownModeSelected = false, isFirstStart = true;
-    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
+    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
-    public HockeyService(HockeyScoreBoardRepository hockeyScoreBoardRepository) {
-        this.hockeyScoreBoardRepository = hockeyScoreBoardRepository;
-        this.currentTime = hockeyScoreBoardRepository.findById(2L).get().getCurrentTime();
-        this.maxTime = hockeyScoreBoardRepository.findById(2L).get().getMaxTime();
-    }
-
-
-
-
-
-    //    public String getTextFieldTime() {
-//        textFieldTime = String.format("%02d:%02d", board.getCurrentTime() / 60, board.getCurrentTime() % 60);
-//        return textFieldTime;
-//    }
 
     public List<HockeyScoreBoard> findAll() {
         return hockeyScoreBoardRepository.findAll();
     }
 
     public HockeyScoreBoard findById(Long id) {
-        return hockeyScoreBoardRepository.findById(id).get();
+        HockeyScoreBoard board = hockeyScoreBoardRepository.findById(id).get();
+        return board;
     }
 
     public HockeyScoreBoard save(HockeyScoreBoard hockeyScoreBoard) {
@@ -52,51 +39,53 @@ public class HockeyService {
        hockeyScoreBoardRepository.delete(findById(id));
     }
 
-    @Transactional
-    public void plusOrMinusOne(String param, Long id) {
+    public Integer plusOrMinusOne(String param, Long id) {
         HockeyScoreBoard board = findById(id);
-        Integer temp = 0;
         switch (param) {
             case "minutesPlus" : board.setCurrentTime(board.getCurrentTime() + 60);
-                break;
-            case "minutesMinus" : board.setCurrentTime(board.getCurrentTime() - 60);
-                break;
+                return board.getCurrentTime();
+            case "minutesMinus" : board.setCurrentTime(board.getCurrentTime() >= 60 ? board.getCurrentTime() - 60 : board.getCurrentTime());
+                return board.getCurrentTime();
             case "secondsPlus" : board.setCurrentTime(board.getCurrentTime() + 1);
-                break;
-            case "secondsMinus" : board.setCurrentTime(board.getCurrentTime() - 1);
-                break;
+                return board.getCurrentTime();
+            case "secondsMinus" : board.setCurrentTime(board.getCurrentTime() > 0 ? board.getCurrentTime() - 1 : board.getCurrentTime());
+                return board.getCurrentTime();
             case "homeScorePlus" : board.setHomeScore(board.getHomeScore() + 1);
-                temp = board.getHomeScore();
-                break;
-            case "homeScoreMinus" : board.setHomeScore(board.getHomeScore() - 1);
-                break;
+                return board.getHomeScore();
+            case "homeScoreMinus" : board.setHomeScore(board.getHomeScore() > 0 ? board.getHomeScore() - 1 : 0);
+                return board.getHomeScore();
             case "periodPlus" : board.setPeriod(board.getPeriod() + 1);
-                break;
-            case "periodMinus" : board.setPeriod(board.getPeriod() - 1);
-                break;
+                return board.getPeriod();
+            case "periodMinus" : board.setPeriod(board.getPeriod() > 0 ? board.getPeriod() - 1 : 0);
+                return board.getPeriod();
             case "awayScorePlus" : board.setAwayScore(board.getAwayScore() + 1);
-                break;
-            case "awayScoreMinus" : board.setAwayScore(board.getAwayScore() - 1);
-                break;
+                return board.getAwayScore();
+            case "awayScoreMinus" : board.setAwayScore(board.getAwayScore() > 0 ? board.getAwayScore() - 1 : 0);
+                return board.getAwayScore();
+            default: return -1;
         }
     }
 
-//    Runnable forwardTask = () -> {
-//        if (startStop.equals("Stop")) {
-//            ++currentTime;
-//            if (findById(2L).getCurrentTime() == findById(2L).getMaxTime()) {
-//                findById(2L).setCurrentTime(0);
-//                startStop = "Start";
-//            }
-//        }
-//    };
-//
-//    Runnable countdownTask = () -> {
-//        if (startStop.equals("Stop")) {
-//            if (findById(2L).getCurrentTime() == 0) {
-//                findById(2L).setCurrentTime(findById(2L).getMaxTime());
-//                startStop = "Start";
-//            } else findById(2L).setCurrentTime(findById(2L).getCurrentTime() - 1);
-//        }
-//    };
+
+    public Future start(Long id) {
+       return scheduledExecutorService.scheduleAtFixedRate(() -> {
+            HockeyScoreBoard board = findById(id);
+
+            if (startStop.equals("Stop")) {
+                if (isCountdownModeSelected){
+                    if (board.getCurrentTime() <= 0) {
+                        board.setCurrentTime(board.getMaxTime());
+                        setStartStop("Start");
+                    } else board.setCurrentTime(board.getCurrentTime() - 1);
+                }
+                else {
+                    if (board.getCurrentTime() >= board.getMaxTime()) {
+                        board.setCurrentTime(0);
+                        setStartStop("Start");
+                    } else board.setCurrentTime(board.getCurrentTime() + 1);
+                }
+            }
+            save(board);
+        } ,1,1, TimeUnit.SECONDS);
+    }
 }

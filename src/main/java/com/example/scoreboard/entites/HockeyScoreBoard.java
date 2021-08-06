@@ -1,12 +1,11 @@
 package com.example.scoreboard.entites;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
 @Data
-@NoArgsConstructor
 @Table(name = "hockey")
 public class HockeyScoreBoard {
 
@@ -35,11 +34,12 @@ public class HockeyScoreBoard {
     @Column
     private Integer period;
 
-    public HockeyScoreBoard(String homeName, String awayName, Integer currentTime, Integer maxTime) {
-        this.homeName = homeName;
-        this.awayName = awayName;
-        this.currentTime = currentTime;
-        this.maxTime = maxTime;
+    public HockeyScoreBoard() {
+//        this.homeName = homeName;
+//        this.awayName = awayName;
+//        this.maxTime = maxTime;
+        currentTime = 0;
+        maxTime = 1200;
         homeScore = 0;
         awayScore = 0;
         period = 1;
