@@ -120,8 +120,8 @@ public class HockeyController {
     public String start(@RequestParam("id") Long id) {
         if (hockeyService.getStartStop().equals("Start")) {
             hockeyService.setStartStop("Stop");
-            if (hockeyService.isFirstStart()) {
-                hockeyService.setFirstStart(false);
+//            if (hockeyService.isFirstStart()) {
+//                hockeyService.setFirstStart(false);
                hockeyService.start(id);
 
 //                Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
@@ -143,7 +143,7 @@ public class HockeyController {
 //
 //                    hockeyService.save(board);
 //                            } ,1,1, TimeUnit.SECONDS);
-            }
+//            }
         } else {
             hockeyService.setStartStop("Start");
         }

@@ -7,9 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @Data
@@ -67,25 +65,48 @@ public class HockeyService {
     }
 
 
-    public Future start(Long id) {
-       return scheduledExecutorService.scheduleAtFixedRate(() -> {
-            HockeyScoreBoard board = findById(id);
-
-            if (startStop.equals("Stop")) {
-                if (isCountdownModeSelected){
-                    if (board.getCurrentTime() <= 0) {
-                        board.setCurrentTime(board.getMaxTime());
-                        setStartStop("Start");
-                    } else board.setCurrentTime(board.getCurrentTime() - 1);
-                }
-                else {
-                    if (board.getCurrentTime() >= board.getMaxTime()) {
-                        board.setCurrentTime(0);
-                        setStartStop("Start");
-                    } else board.setCurrentTime(board.getCurrentTime() + 1);
+    public void start(Long id) {
+        new Thread(() -> {
+            while (startStop.equals("Stop")){
+                try {
+                    HockeyScoreBoard board = findById(id);
+                    Thread.sleep(1000);
+                    if (isCountdownModeSelected){
+                        if (board.getCurrentTime() <= 0) {
+                            board.setCurrentTime(board.getMaxTime());
+                            setStartStop("Start");
+                        } else board.setCurrentTime(board.getCurrentTime() - 1);
+                    }
+                    else {
+                        if (board.getCurrentTime() >= board.getMaxTime()) {
+                            board.setCurrentTime(0);
+                            setStartStop("Start");
+                        } else board.setCurrentTime(board.getCurrentTime() + 1);
+                    }
+                    save(board);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-            save(board);
-        } ,1,1, TimeUnit.SECONDS);
+        }).start();
+//       return scheduledExecutorService.scheduleAtFixedRate(() -> {
+//            HockeyScoreBoard board = findById(id);
+//
+//            if (startStop.equals("Stop")) {
+//                if (isCountdownModeSelected){
+//                    if (board.getCurrentTime() <= 0) {
+//                        board.setCurrentTime(board.getMaxTime());
+//                        setStartStop("Start");
+//                    } else board.setCurrentTime(board.getCurrentTime() - 1);
+//                }
+//                else {
+//                    if (board.getCurrentTime() >= board.getMaxTime()) {
+//                        board.setCurrentTime(0);
+//                        setStartStop("Start");
+//                    } else board.setCurrentTime(board.getCurrentTime() + 1);
+//                }
+//            }
+//            save(board);
+//        } ,1,1, TimeUnit.SECONDS);
     }
 }
