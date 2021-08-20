@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-<!--    <script th:src="@{/js/main.js}"></script>-->
+    <script th:src="@{/js/main.js}"></script>
 </head>
 
 <body>
@@ -63,7 +63,7 @@
 
 <!--    <form th:action="@{/hockey/start}" method="POST">-->
 <!--        <input id="id" th:value="${board.id}" name="id" type="hidden" class="form-control">-->
-        <button id="startStop" type="button" class="btn btn-danger" th:text="${startStop}" onclick="getStartStop(document.getElementById('id').value)"/>
+        <button id="startStop" type="button" class="btn btn-danger" th:text="${board.startStop}" onclick="startStop(document.getElementById('id').value)"/>
 <!--    </form>-->
 
 
@@ -79,83 +79,20 @@
                 <div class="card-body">
                     <div>
                         <label for="countdownMode">Countdown Mode</label>
-                        <input id="countdownMode" type="checkbox" name="isCountdownModeSelected" th:checked="${isCountdownModeSelected}" onclick="changeMode()"/>
+                        <input id="countdownMode" type="checkbox" name="isCountdownModeSelected" th:checked="${board.isCountdownModeSelected()}" onclick="changeMode()"/>
                     </div>
                     <div>
                         <label for="maxTime">Maximum period time</label>
                         <input id="maxTime" th:value="${board.maxTime / 60}" name="maxTime" type="number" class="form-control" onchange="changeField(value, name)">
+                        <button value="reset" type="button" class="btn btn-primary" onclick="reset()">Reset</button>
+                        <form th:action="@{/hockey/swap(id=${board.id})}" th:method="POST">
+                            <button type="submit" class="btn btn-primary">Swap</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-
-
-
-    <script>
-        function getStartStop(id){
-            $.ajax({
-                type: "POST",
-                url: "/hockey/start",
-                data: {id: id},
-                success: result => {
-                    $("#startStop").text(result)
-                }
-            });
-        };
-
-        function plusOrMinusOne(param){
-            $.ajax({
-                type: "POST",
-                url: "/hockey/plus-minus",
-                data: {action: param, id: document.getElementById('id').value},
-                success: result => {
-                    if (param == "minutesPlus" || param == "minutesMinus" || param == "secondsPlus" || param == "secondsMinus"){
-                        $("#time").text(String(~~(result / 60)).padStart(2, '0') + ':' + String(~~(result % 60)).padStart(2, '0'));
-                    } else if (param == "homeScorePlus" || param == "homeScoreMinus"){
-                        $("#homeScore").text(result);
-                    } else if (param == "periodPlus" || param == "periodMinus"){
-                        $('#period').text(result);
-                    } else if (param == "awayScorePlus" || param == "awayScoreMinus"){
-                        $("#awayScore").text(result);
-                    }
-                }
-            });
-        };
-
-        function changeMode(){
-            $.ajax({
-                type: "POST",
-                url: "/hockey/mode",
-                data: {id: document.getElementById('id').value},
-            });
-        };
-
-        function changeField(val, name){
-            $.ajax({
-                type: "POST",
-                url: "/hockey/name",
-                data: {value: val, name: name, id: document.getElementById('id').value},
-            });
-        };
-
-        function time() {
-            $.ajax({
-                type: "GET",
-                url: "/hockey/time",
-                data: {id: document.getElementById('id').value},
-                success: result => {
-                    $("#homeScore").text(result[0])
-                    $("#time").text(String(~~(result[1] / 60)).padStart(2, '0') + ':' + String(result[1] % 60).padStart(2, '0'))
-                    $("#awayScore").text(result[2])
-                    if (result[3] > 0) $("#period").text(result[3]);
-                    else $("#period").text('OT');
-                }
-            });
-        }
-
-        setInterval(time,1000);
-    </script>
 </body>
 </html>

@@ -3,30 +3,29 @@ package com.example.scoreboard.service;
 import com.example.scoreboard.entites.HockeyScoreBoard;
 import com.example.scoreboard.repositories.HockeyScoreBoardRepository;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 @Service
 @Data
+//@Scope("prototype")
 public class HockeyService {
     private final HockeyScoreBoardRepository hockeyScoreBoardRepository;
-//    private Integer currentTime;
-//    private Integer maxTime;
-    private String startStop = "Start";
-    private boolean isCountdownModeSelected = false, isFirstStart = true;
-    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+    private HockeyScoreBoard board;
 
+    @Autowired
+    public HockeyService(HockeyScoreBoardRepository hockeyScoreBoardRepository) {
+        this.hockeyScoreBoardRepository = hockeyScoreBoardRepository;
+    }
 
     public List<HockeyScoreBoard> findAll() {
         return hockeyScoreBoardRepository.findAll();
     }
 
     public HockeyScoreBoard findById(Long id) {
-        HockeyScoreBoard board = hockeyScoreBoardRepository.findById(id).get();
-        return board;
+        return hockeyScoreBoardRepository.findById(id).get();
     }
 
     public HockeyScoreBoard save(HockeyScoreBoard hockeyScoreBoard) {
@@ -34,11 +33,11 @@ public class HockeyService {
     }
 
     public void deleteById(Long id) {
-       hockeyScoreBoardRepository.delete(findById(id));
+       hockeyScoreBoardRepository.deleteById(id);
     }
 
     public Integer plusOrMinusOne(String param, Long id) {
-        HockeyScoreBoard board = findById(id);
+        board = findById(id);
         switch (param) {
             case "minutesPlus" : board.setCurrentTime(board.getCurrentTime() + 60);
                 return board.getCurrentTime();
@@ -65,48 +64,42 @@ public class HockeyService {
     }
 
 
-    public void start(Long id) {
-        new Thread(() -> {
-            while (startStop.equals("Stop")){
-                try {
-                    HockeyScoreBoard board = findById(id);
-                    Thread.sleep(1000);
-                    if (isCountdownModeSelected){
-                        if (board.getCurrentTime() <= 0) {
-                            board.setCurrentTime(board.getMaxTime());
-                            setStartStop("Start");
-                        } else board.setCurrentTime(board.getCurrentTime() - 1);
-                    }
-                    else {
-                        if (board.getCurrentTime() >= board.getMaxTime()) {
-                            board.setCurrentTime(0);
-                            setStartStop("Start");
-                        } else board.setCurrentTime(board.getCurrentTime() + 1);
+    public String start(Long id) {
+        board = findById(id);
+
+        if (board.getStartStop().equals("Start")) {
+           board.setStartStop("Stop");
+
+            Thread timeThread = new Thread(() -> {
+                while (board.getStartStop().equals("Stop")){
+                    try {
+                        Thread.sleep(1000);
+
+                        if (board.isCountdownModeSelected()){
+                            if (board.getCurrentTime() <= 0) {
+                                board.setCurrentTime(board.getMaxTime());
+                                board.setStartStop("Start");
+                            } else board.setCurrentTime(board.getCurrentTime() - 1);
+                        }
+                        else {
+                            if (board.getCurrentTime() >= board.getMaxTime()) {
+                                board.setCurrentTime(0);
+                                board.setStartStop("Start");
+                            } else board.setCurrentTime(board.getCurrentTime() + 1);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                     save(board);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
-            }
-        }).start();
-//       return scheduledExecutorService.scheduleAtFixedRate(() -> {
-//            HockeyScoreBoard board = findById(id);
-//
-//            if (startStop.equals("Stop")) {
-//                if (isCountdownModeSelected){
-//                    if (board.getCurrentTime() <= 0) {
-//                        board.setCurrentTime(board.getMaxTime());
-//                        setStartStop("Start");
-//                    } else board.setCurrentTime(board.getCurrentTime() - 1);
-//                }
-//                else {
-//                    if (board.getCurrentTime() >= board.getMaxTime()) {
-//                        board.setCurrentTime(0);
-//                        setStartStop("Start");
-//                    } else board.setCurrentTime(board.getCurrentTime() + 1);
-//                }
-//            }
-//            save(board);
-//        } ,1,1, TimeUnit.SECONDS);
+            });
+            timeThread.setDaemon(true);
+            timeThread.start();
+        } else {
+            board.setStartStop("Start");
+            save(board);
+        }
+
+        return board.getStartStop();
     }
 }

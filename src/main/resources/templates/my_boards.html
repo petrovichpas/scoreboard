@@ -26,8 +26,7 @@
                 <td>
                     <a th:href="@{'/hockey/board/' + ${board.getId()}}" class="btn btn-primary">Control panel</a>
                     <a th:href="@{'/hockey/broadcast/' + ${board.getId()}}"  target="_blank" class="btn btn-primary">Show</a>
-                    <form th:action="@{/hockey/delete}" method="POST" style="display: inline">
-                        <input th:value="${board.id}" name="id" type="hidden" class="form-control">
+                    <form th:action="@{/hockey/delete(id=${board.id})}" th:method="POST" style="display: inline">
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
                 </td>

@@ -2,17 +2,27 @@ package com.example.scoreboard.controllers;
 
 import com.example.scoreboard.entites.HockeyScoreBoard;
 import com.example.scoreboard.service.HockeyService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequiredArgsConstructor
 @RequestMapping("/hockey")
 public class HockeyController {
-    private final HockeyService hockeyService;
+    private HockeyService hockeyService;
+
+    @Autowired
+    public HockeyController(HockeyService hockeyService) {
+        this.hockeyService = hockeyService;
+    }
+
+    @Lookup
+    public HockeyService getHockeyService() {
+        return null;
+    }
 
     @GetMapping("/main")
     public String main() {
@@ -26,22 +36,20 @@ public class HockeyController {
     }
 
     @GetMapping("/create")
-    public String createBoard(Model model) {
-        HockeyScoreBoard board = new HockeyScoreBoard();
-        return "redirect:/hockey/board/" + hockeyService.save(board).getId();
+    public String createBoard() {
+        return "redirect:/hockey/board/" + hockeyService.save(new HockeyScoreBoard()).getId();
     }
 
     @GetMapping("/board/{id}")
     public String openBoard(Model model, @PathVariable Long id) {
-        HockeyScoreBoard board = hockeyService.findById(id);
-//        hockeyService.setCurrentTime(board.getCurrentTime());
-//        hockeyService.setMaxTime(board.getMaxTime());
-
-        model.addAttribute("board", board);
-//        model.addAttribute("currentTime", hockeyService.getCurrentTime());
-        model.addAttribute("isCountdownModeSelected", hockeyService.isCountdownModeSelected());
-        model.addAttribute("startStop", hockeyService.getStartStop());
+        model.addAttribute("board", hockeyService.findById(id));
         return "admin_board";
+    }
+
+    @GetMapping("/broadcast/{id}")
+    public String broadcast(Model model, @PathVariable Long id) {
+        model.addAttribute("board", hockeyService.findById(id));
+        return "broadcast";
     }
 
     @GetMapping("/edit/{id}")
@@ -50,15 +58,15 @@ public class HockeyController {
         return "board_form";
     }
 
-    @PostMapping("/save")
-    public String saveOrUpdateBoard(@ModelAttribute HockeyScoreBoard board) {
-        hockeyService.save(board);
-        return "redirect:/hockey/boards";
-    }
-
     @PostMapping("/delete")
     public String deleteBoard(@RequestParam("id") Long id) {
         hockeyService.deleteById(id);
+        return "redirect:/hockey/boards";
+    }
+
+    @PostMapping("/save")
+    public String saveOrUpdateBoard(@ModelAttribute HockeyScoreBoard board) {
+        hockeyService.save(board);
         return "redirect:/hockey/boards";
     }
 
@@ -72,13 +80,12 @@ public class HockeyController {
     @GetMapping("/time")
     @ResponseBody
     public Integer[] time(@RequestParam("id") Long id) {
-        Integer[] arr = new Integer[]{
+        return new Integer[]{
                 hockeyService.findById(id).getHomeScore(),
                 hockeyService.findById(id).getCurrentTime(),
                 hockeyService.findById(id).getAwayScore(),
                 hockeyService.findById(id).getPeriod()
         };
-        return arr;
     }
 
     @PostMapping("/mode")
@@ -86,13 +93,13 @@ public class HockeyController {
     @ResponseBody
     public void changeMode(@RequestParam("id") Long id) {
         HockeyScoreBoard board = hockeyService.findById(id);
-        hockeyService.setCountdownModeSelected(hockeyService.isCountdownModeSelected() ? false : true);
+        board.setCountdownModeSelected(board.isCountdownModeSelected() ? false : true);
 
-        if (hockeyService.isCountdownModeSelected() && board.getCurrentTime() == 0) {
+        if (board.isCountdownModeSelected() && board.getCurrentTime() == 0) {
             board.setCurrentTime(board.getMaxTime());
-        } else if (hockeyService.isCountdownModeSelected() && board.getCurrentTime() != board.getMaxTime() && board.getCurrentTime() != 0){
+        } else if (board.isCountdownModeSelected() && board.getCurrentTime() != board.getMaxTime() && board.getCurrentTime() != 0){
             board.setCurrentTime((board.getCurrentTime() - board.getMaxTime()) * -1);
-        } else if (!hockeyService.isCountdownModeSelected() && board.getCurrentTime() != 0){
+        } else if (!board.isCountdownModeSelected() && board.getCurrentTime() != 0){
             board.setCurrentTime(board.getMaxTime() - board.getCurrentTime());
         }
     }
@@ -107,46 +114,34 @@ public class HockeyController {
         else if(name.equals("maxTime")) board.setMaxTime(Integer.parseInt(value) * 60);
     }
 
-    @GetMapping("/broadcast/{id}")
-    public String broadcast(Model model, @PathVariable Long id) {
-        model.addAttribute("board", hockeyService.findById(id));
-        return "broadcast";
+//    @PostMapping(value = "/reset", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/reset")
+    @Transactional
+    @ResponseBody
+    public void reset(@RequestParam("id") Long id) {
+        HockeyScoreBoard board = hockeyService.findById(id);
+        board.setHomeName("");
+        board.setAwayName("");
+        board.setHomeScore(0);
+        board.setAwayScore(0);
+        board.setPeriod(1);
+        board.setCurrentTime(board.isCountdownModeSelected() ? board.getMaxTime() : 0);
     }
 
+    @PostMapping("/swap")
+    @Transactional
+    public String swap(@RequestParam("id") Long id) {
+        HockeyScoreBoard board = hockeyService.findById(id);
+        String tempName = board.getHomeName();
+        board.setHomeName(board.getAwayName());
+        board.setAwayName(tempName);
+        return "redirect:/hockey/board/" + id;
+    }
 
     @PostMapping("/start")
     @Transactional
     @ResponseBody
     public String start(@RequestParam("id") Long id) {
-        if (hockeyService.getStartStop().equals("Start")) {
-            hockeyService.setStartStop("Stop");
-//            if (hockeyService.isFirstStart()) {
-//                hockeyService.setFirstStart(false);
-               hockeyService.start(id);
-
-//                Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
-//                    HockeyScoreBoard board = hockeyService.findById(id);
-//
-//                            if (hockeyService.getStartStop().equals("Stop")) {
-//                                if (hockeyService.isCountdownModeSelected()){
-//                                    if (board.getCurrentTime() <= 0) {
-//                                        board.setCurrentTime(board.getMaxTime());
-//                                        hockeyService.setStartStop("Start");
-//                                    } else board.setCurrentTime(board.getCurrentTime() - 1);
-//                                } else {
-//                                    if (board.getCurrentTime() >= board.getMaxTime()) {
-//                                        board.setCurrentTime(0);
-//                                        hockeyService.setStartStop("Start");
-//                                    } else board.setCurrentTime(board.getCurrentTime() + 1);
-//                                }
-//                            }
-//
-//                    hockeyService.save(board);
-//                            } ,1,1, TimeUnit.SECONDS);
-//            }
-        } else {
-            hockeyService.setStartStop("Start");
-        }
-        return hockeyService.getStartStop();
+        return getHockeyService().start(id);
     }
 }

@@ -25,23 +25,28 @@ public class HockeyScoreBoard {
     @Column(name = "away_score")
     private Integer awayScore;
 
+    @Column
+    private Integer period;
+
     @Column(name = "current_t")
     private Integer currentTime;
 
     @Column(name = "max_t")
     private Integer maxTime;
 
-    @Column
-    private Integer period;
+    @Column(nullable = false)
+    private boolean isCountdownModeSelected;
+
+    @Column(nullable = false)
+    private String startStop;
 
     public HockeyScoreBoard() {
-//        this.homeName = homeName;
-//        this.awayName = awayName;
-//        this.maxTime = maxTime;
         currentTime = 0;
         maxTime = 1200;
         homeScore = 0;
         awayScore = 0;
         period = 1;
+        isCountdownModeSelected = false;
+        startStop = "Start";
     }
 }
