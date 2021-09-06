@@ -1,0 +1,109 @@
+button {
+  touch-action: manipulation;
+}
+
+.page_max-wrapper {
+  padding: 14px;
+  margin: 0 auto;
+}
+
+.score-board {
+
+}
+
+.team-names {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.team-names_name {
+  flex: 1 1 auto;
+  /*max-width: 140px;*/
+  max-width: calc(50% - 10px);
+}
+
+.period {
+  order: 3;
+}
+
+.buttons-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttons-group_button {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+}
+
+.buttons-group_value {
+  min-width: 40px;
+  text-align: center;
+  font-size: 2rem;
+  padding: 0 4px;
+}
+
+.block-title {
+  display: flex;
+  align-items: center;
+}
+
+.block-title span {
+  padding: 0 10px;
+}
+
+.block-title::before,
+.block-title::after {
+  content: '';
+  flex: 1 1 auto;
+  width: 100%;
+  height: 1px;
+  background-color: #a4a4a4;
+}
+
+.time {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.time_value {
+  font-size: 3rem;
+  text-align: center;
+}
+
+.time_controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bordered {
+  padding: 8px;
+  border: 1px solid #a4a4a4;
+  border-radius: 8px;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+@media (min-width: 660px) {
+  .team-names {
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+  .team-names_name {
+    width: auto;
+    justify-content: space-between;
+    max-width: 200px;
+  }
+  .period {
+    order: initial;
+  }
+}

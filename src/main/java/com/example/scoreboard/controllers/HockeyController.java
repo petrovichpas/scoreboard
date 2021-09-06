@@ -3,7 +3,6 @@ package com.example.scoreboard.controllers;
 import com.example.scoreboard.entites.HockeyScoreBoard;
 import com.example.scoreboard.service.HockeyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -12,17 +11,17 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/hockey")
 public class HockeyController {
-    private HockeyService hockeyService;
+    private final HockeyService hockeyService;
 
     @Autowired
     public HockeyController(HockeyService hockeyService) {
         this.hockeyService = hockeyService;
     }
 
-    @Lookup
-    public HockeyService getHockeyService() {
-        return null;
-    }
+//    @Lookup
+//    public HockeyService getHockeyService() {
+//        return null;
+//    }
 
     @GetMapping("/main")
     public String main() {
@@ -52,12 +51,6 @@ public class HockeyController {
         return "broadcast";
     }
 
-    @GetMapping("/edit/{id}")
-    public String editBoard(Model model, @PathVariable Long id) {
-        model.addAttribute("board", hockeyService.findById(id));
-        return "board_form";
-    }
-
     @PostMapping("/delete")
     public String deleteBoard(@RequestParam("id") Long id) {
         hockeyService.deleteById(id);
@@ -70,22 +63,17 @@ public class HockeyController {
         return "redirect:/hockey/boards";
     }
 
-    @PostMapping("/plus-minus")
+    @PostMapping("/plus_minus")
     @Transactional
     @ResponseBody
-    public Integer plusOrMinusOne(@RequestParam("action") String param, @RequestParam("id") Long id) {
+    public String plusOrMinusOne(@RequestParam("action") String param, @RequestParam("id") Long id) {
         return hockeyService.plusOrMinusOne(param, id);
     }
 
-    @GetMapping("/time")
+    @GetMapping("/get_board")
     @ResponseBody
-    public Integer[] time(@RequestParam("id") Long id) {
-        return new Integer[]{
-                hockeyService.findById(id).getHomeScore(),
-                hockeyService.findById(id).getCurrentTime(),
-                hockeyService.findById(id).getAwayScore(),
-                hockeyService.findById(id).getPeriod()
-        };
+    public HockeyScoreBoard getBoard(@RequestParam("id") Long id) {
+        return hockeyService.findById(id);
     }
 
     @PostMapping("/mode")
@@ -93,7 +81,7 @@ public class HockeyController {
     @ResponseBody
     public void changeMode(@RequestParam("id") Long id) {
         HockeyScoreBoard board = hockeyService.findById(id);
-        board.setCountdownModeSelected(board.isCountdownModeSelected() ? false : true);
+        board.setCountdownModeSelected(!board.isCountdownModeSelected());
 
         if (board.isCountdownModeSelected() && board.getCurrentTime() == 0) {
             board.setCurrentTime(board.getMaxTime());
@@ -104,17 +92,25 @@ public class HockeyController {
         }
     }
 
-    @PostMapping("/name")
+    @PostMapping("/change_input")
     @Transactional
     @ResponseBody
-    public void changeField(@RequestParam("value") String value, @RequestParam("name") String name, @RequestParam("id") Long id) {
+    public void changeInput(@RequestParam("value") String value, @RequestParam("name") String name, @RequestParam("id") Long id) {
         HockeyScoreBoard board = hockeyService.findById(id);
-        if (name.equals("homeName")) board.setHomeName(value);
-        else if(name.equals("awayName")) board.setAwayName(value);
-        else if(name.equals("maxTime")) board.setMaxTime(Integer.parseInt(value) * 60);
+        switch (name) {
+            case "homeName":
+                board.setHomeName(value);
+                break;
+            case "awayName":
+                board.setAwayName(value);
+                break;
+            case "maxTime":
+                board.setMaxTime(Integer.parseInt(value) * 60);
+                break;
+        }
+        hockeyService.save(board);
     }
 
-//    @PostMapping(value = "/reset", produces = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping("/reset")
     @Transactional
     @ResponseBody
@@ -130,18 +126,19 @@ public class HockeyController {
 
     @PostMapping("/swap")
     @Transactional
-    public String swap(@RequestParam("id") Long id) {
+    @ResponseBody
+    public HockeyScoreBoard swap(@RequestParam("id") Long id) {
         HockeyScoreBoard board = hockeyService.findById(id);
         String tempName = board.getHomeName();
         board.setHomeName(board.getAwayName());
         board.setAwayName(tempName);
-        return "redirect:/hockey/board/" + id;
+        return board;
     }
 
     @PostMapping("/start")
     @Transactional
     @ResponseBody
     public String start(@RequestParam("id") Long id) {
-        return getHockeyService().start(id);
+        return hockeyService.start(id);
     }
 }

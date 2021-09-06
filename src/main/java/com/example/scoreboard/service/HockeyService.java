@@ -6,18 +6,21 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Data
 //@Scope("prototype")
 public class HockeyService {
     private final HockeyScoreBoardRepository hockeyScoreBoardRepository;
-    private HockeyScoreBoard board;
+    private Set<HockeyScoreBoard> boardSet = new LinkedHashSet<>();
 
     @Autowired
     public HockeyService(HockeyScoreBoardRepository hockeyScoreBoardRepository) {
         this.hockeyScoreBoardRepository = hockeyScoreBoardRepository;
+        boardSet.addAll(findAll());
     }
 
     public List<HockeyScoreBoard> findAll() {
@@ -25,63 +28,83 @@ public class HockeyService {
     }
 
     public HockeyScoreBoard findById(Long id) {
-        return hockeyScoreBoardRepository.findById(id).get();
+        return boardSet.stream().filter(e-> e.getId().equals(id)).findFirst().get();
     }
 
     public HockeyScoreBoard save(HockeyScoreBoard hockeyScoreBoard) {
-        return hockeyScoreBoardRepository.save(hockeyScoreBoard);
+        boardSet.add(hockeyScoreBoardRepository.save(hockeyScoreBoard));
+        return boardSet.stream().skip(boardSet.size()-1).findFirst().get();
     }
 
     public void deleteById(Long id) {
        hockeyScoreBoardRepository.deleteById(id);
     }
 
-    public Integer plusOrMinusOne(String param, Long id) {
-        board = findById(id);
+    public String plusOrMinusOne(String param, Long id) {
+        HockeyScoreBoard board = findById(id);
+        String response = "No matches";
         switch (param) {
-            case "minutesPlus" : board.setCurrentTime(board.getCurrentTime() + 60);
-                return board.getCurrentTime();
-            case "minutesMinus" : board.setCurrentTime(board.getCurrentTime() >= 60 ? board.getCurrentTime() - 60 : board.getCurrentTime());
-                return board.getCurrentTime();
-            case "secondsPlus" : board.setCurrentTime(board.getCurrentTime() + 1);
-                return board.getCurrentTime();
-            case "secondsMinus" : board.setCurrentTime(board.getCurrentTime() > 0 ? board.getCurrentTime() - 1 : board.getCurrentTime());
-                return board.getCurrentTime();
-            case "homeScorePlus" : board.setHomeScore(board.getHomeScore() + 1);
-                return board.getHomeScore();
-            case "homeScoreMinus" : board.setHomeScore(board.getHomeScore() > 0 ? board.getHomeScore() - 1 : 0);
-                return board.getHomeScore();
-            case "periodPlus" : board.setPeriod(board.getPeriod() + 1);
-                return board.getPeriod();
-            case "periodMinus" : board.setPeriod(board.getPeriod() > 0 ? board.getPeriod() - 1 : 0);
-                return board.getPeriod();
-            case "awayScorePlus" : board.setAwayScore(board.getAwayScore() + 1);
-                return board.getAwayScore();
-            case "awayScoreMinus" : board.setAwayScore(board.getAwayScore() > 0 ? board.getAwayScore() - 1 : 0);
-                return board.getAwayScore();
-            default: return -1;
+            case "minutesPlus":
+                board.setCurrentTime(board.getCurrentTime() + 60);
+                response = "time:" + board.getCurrentTime();
+                break;
+            case "minutesMinus":
+                board.setCurrentTime(board.getCurrentTime() >= 60 ? board.getCurrentTime() - 60 : board.getCurrentTime());
+                response = "time:" + board.getCurrentTime();
+                break;
+            case "secondsPlus":
+                board.setCurrentTime(board.getCurrentTime() + 1);
+                response = "time:" + board.getCurrentTime();
+                break;
+            case "secondsMinus":
+                board.setCurrentTime(board.getCurrentTime() > 0 ? board.getCurrentTime() - 1 : board.getCurrentTime());
+                response = "time:" + board.getCurrentTime();
+                break;
+            case "homeScorePlus":
+                board.setHomeScore(board.getHomeScore() + 1);
+                response = "homeScore:" + board.getHomeScore();
+                break;
+            case "homeScoreMinus":
+                board.setHomeScore(board.getHomeScore() > 0 ? board.getHomeScore() - 1 : 0);
+                response = "homeScore:" + board.getHomeScore();
+                break;
+            case "periodPlus":
+                board.setPeriod(board.getPeriod() + 1);
+                response = "period:" + board.getPeriod();
+                break;
+            case "periodMinus":
+                board.setPeriod(board.getPeriod() > 0 ? board.getPeriod() - 1 : 0);
+                response = "period:" + board.getPeriod();
+                break;
+            case "awayScorePlus":
+                board.setAwayScore(board.getAwayScore() + 1);
+                response = "awayScore:" + board.getAwayScore();
+                break;
+            case "awayScoreMinus":
+                board.setAwayScore(board.getAwayScore() > 0 ? board.getAwayScore() - 1 : 0);
+                response = "awayScore:" + board.getAwayScore();
+                break;
         }
+        save(board);
+        return response;
     }
 
-
     public String start(Long id) {
-        board = findById(id);
+        HockeyScoreBoard board = findById(id);
 
         if (board.getStartStop().equals("Start")) {
-           board.setStartStop("Stop");
-
+            board.setStartStop("Stop");
             Thread timeThread = new Thread(() -> {
                 while (board.getStartStop().equals("Stop")){
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(999);
 
                         if (board.isCountdownModeSelected()){
                             if (board.getCurrentTime() <= 0) {
                                 board.setCurrentTime(board.getMaxTime());
                                 board.setStartStop("Start");
                             } else board.setCurrentTime(board.getCurrentTime() - 1);
-                        }
-                        else {
+                        } else {
                             if (board.getCurrentTime() >= board.getMaxTime()) {
                                 board.setCurrentTime(0);
                                 board.setStartStop("Start");
@@ -90,16 +113,12 @@ public class HockeyService {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    save(board);
                 }
             });
             timeThread.setDaemon(true);
             timeThread.start();
-        } else {
-            board.setStartStop("Start");
-            save(board);
-        }
-
+        } else board.setStartStop("Start");
+        save(board);
         return board.getStartStop();
     }
 }

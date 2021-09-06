@@ -1,7 +1,13 @@
 // $(document).ready(() => {
 // });
 
-function startStop(id){
+const id = document.getElementById("id").value;
+document.getElementById("startStop").addEventListener('click', startStop);
+document.getElementById("countdownMode").addEventListener('click', changeMode);
+document.getElementById("reset").addEventListener('click', reset);
+document.getElementById("swap").addEventListener('click', swap);
+
+function startStop(){
     $.ajax({
         type: "POST",
         url: "/hockey/start",
@@ -15,18 +21,14 @@ function startStop(id){
 function plusOrMinusOne(param){
     $.ajax({
         type: "POST",
-        url: "/hockey/plus-minus",
-        data: {action: param, id: document.getElementById('id').value},
+        url: "/hockey/plus_minus",
+        data: {action: param, id: id},
         success: result => {
-            if (param == "minutesPlus" || param == "minutesMinus" || param == "secondsPlus" || param == "secondsMinus"){
-                $("#time").text(String(~~(result / 60)).padStart(2, '0') + ':' + String(~~(result % 60)).padStart(2, '0'));
-            } else if (param == "homeScorePlus" || param == "homeScoreMinus"){
-                $("#homeScore").text(result);
-            } else if (param == "periodPlus" || param == "periodMinus"){
-                $('#period').text(result);
-            } else if (param == "awayScorePlus" || param == "awayScoreMinus"){
-                $("#awayScore").text(result);
-            }
+            const tokens = result.split(":");
+            if (tokens[0] == "time")
+                $("#time").text(String(~~(tokens[1] / 60)).padStart(2, "0") + ':' + String(~~(tokens[1] % 60)).padStart(2, "0"));
+            else
+                $("#"+tokens[0]).text(tokens[1]);
         }
     });
 };
@@ -35,15 +37,15 @@ function changeMode(){
     $.ajax({
         type: "POST",
         url: "/hockey/mode",
-        data: {id: document.getElementById('id').value},
+        data: {id: id},
     });
 };
 
-function changeField(val, name){
+function changeInput(val, name){
     $.ajax({
         type: "POST",
-        url: "/hockey/name",
-        data: {value: val, name: name, id: document.getElementById('id').value},
+        url: "/hockey/change_input",
+        data: {value: val, name: name, id: id},
     });
 };
 
@@ -51,14 +53,7 @@ function reset(){
     $.ajax({
         type: "POST",
         url: "/hockey/reset",
-        data: {id: document.getElementById('id').value},
-        // success: result => {
-        //     $("#homeScore").text(result[0])
-        //     $("#time").text(String(~~(result[1] / 60)).padStart(2, '0') + ':' + String(result[1] % 60).padStart(2, '0'))
-        //     $("#awayScore").text(result[2])
-        //     if (result[3] > 0) $("#period").text(result[3]);
-        //     else $("#period").text('OT');
-        // }
+        data: {id: id},
     });
 };
 
@@ -66,23 +61,29 @@ function swap(){
     $.ajax({
         type: "POST",
         url: "/hockey/swap",
-        data: {id: document.getElementById('id').value},
+        data: {id: id},
+        success: result => {
+            $("#homeName").val(result.homeName)
+            $("#awayName").val(result.awayName)
+        }
     });
 };
 
-function time() {
+function getBoard() {
     $.ajax({
         type: "GET",
-        url: "/hockey/time",
-        data: {id: document.getElementById('id').value},
+        url: "/hockey/get_board",
+        data: {id: id},
         success: result => {
-            $("#homeScore").text(result[0])
-            $("#time").text(String(~~(result[1] / 60)).padStart(2, '0') + ':' + String(result[1] % 60).padStart(2, '0'))
-            $("#awayScore").text(result[2])
-            if (result[3] > 0) $("#period").text(result[3]);
+            $("#homeName").val(result.homeName)
+            $("#awayName").val(result.awayName)
+            $("#homeScore").text(result.homeScore)
+            $("#time").text(String(~~(result.currentTime / 60)).padStart(2, '0') + ':' + String(result.currentTime % 60).padStart(2, '0'))
+            $("#awayScore").text(result.awayScore)
+            if (result.period > 0) $("#period").text(result.period)
             else $("#period").text('OT');
         }
     });
 }
 
-setInterval(time,1000);
+setInterval(getBoard,1000);

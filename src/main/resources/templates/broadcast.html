@@ -4,9 +4,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>December Market</title>
-    <link th:href="@{/css/styles.css}" rel="stylesheet" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<!--    <script th:src="@{/js/main.js}"></script>-->
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
 </head>
 
 <body>
@@ -39,22 +37,25 @@
         </footer>
     </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script>
-        function time() {
+        function getBoard() {
             $.ajax({
                 type: "GET",
-                url: "/hockey/time",
-                data: {id: document.getElementById('id').value},
+                url: "/hockey/get_board",
+                data: {id: document.getElementById("id").value},
                 success: result => {
-                    $("#homeScore").text(result[0])
-                    $("#time").text(String(~~(result[1] / 60)).padStart(2, '0') + ':' + String(result[1] % 60).padStart(2, '0'))
-                    $("#awayScore").text(result[2])
-                    $("#period").text(result[3])
+                    $("#homeName").val(result.homeName)
+                    $("#awayName").val(result.awayName)
+                    $("#homeScore").text(result.homeScore)
+                    $("#time").text(String(~~(result.currentTime / 60)).padStart(2, '0') + ':' + String(result.currentTime % 60).padStart(2, '0'))
+                    $("#awayScore").text(result.awayScore)
+                    if (result.period > 0) $("#period").text(result.period)
+                    else $("#period").text('OT');
                 }
             });
         }
-
-        setInterval(time,1000);
+        setInterval(getBoard,1000);
     </script>
 </body>
 </html>
