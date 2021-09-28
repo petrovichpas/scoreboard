@@ -10,8 +10,11 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       
-      - name: Build with Maven
-        run: cd scoreboard; mvn package; cd target; ls
+      - name: LS
+        run: ls
+        
+#       - name: Build with Maven
+#         run: cd scoreboard; mvn package; cd target; ls
     
     
     
