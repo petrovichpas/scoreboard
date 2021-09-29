@@ -19,7 +19,9 @@ jobs:
       
       - name: UU
         run: |
-         cd ../../../../../opt
+         cd ../../
+         ls
+         cd ../../../
          ls
     
     
