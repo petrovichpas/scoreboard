@@ -12,14 +12,11 @@ jobs:
         
 #       - name: Build with Maven
 #         run: mvn package -Dmaven.test.skip.exec
-        
-      - name: LL
-        uses: scoreboard/ssh-action@master
-        with: 
-         host: 23.105.226.90
-         key: ${{secrets.FOZZY_KEY}}
-#         run: ssh root@23.105.226.90
-        
+      - run: set -eu
+      - run: mkdir "$HOME/.ssh"
+      - run: echo "${{ secrets.FOZZY_KEY }}" > "$HOME/.ssh/key"
+      - run: chmod 600 "$HOME/.ssh/key"
+      
       - name: UU
         run: ls
     
