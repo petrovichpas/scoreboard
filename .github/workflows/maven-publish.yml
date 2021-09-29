@@ -9,11 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-        
-      - run: set -eu
-      - run: mkdir "$HOME/.ssh"
-      - run: echo "${{ secrets.FOZZY_KEY }}" > "$HOME/.ssh/key"
-      - run: chmod 600 "$HOME/.ssh/key"
       
       - name: Build with Maven
         run: mvn package -Dmaven.test.skip.exec
@@ -24,9 +19,14 @@ jobs:
 #       - name: S2
 #         run: ls
         
+      - run: set -eu
+      - run: mkdir "$HOME/.ssh"
+      - run: echo "${{ secrets.FOZZY_KEY }}" > "$HOME/.ssh/key"
+      - run: chmod 600 "$HOME/.ssh/key"
+      
       - name: Deploy
-        run: scp /home/runner/work/scoreboard/scoreboard/target.scoreboard-1.0.jar root@23.105.226.90:opt/ppp/
-#         run: rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --verbose --progress /home/runner/work/scoreboard/scoreboard/target.scoreboard-1.0.jar root@23.105.226.90:opt/ppp/
+#         run: scp /home/runner/work/scoreboard/scoreboard/target.scoreboard-1.0.jar root@23.105.226.90:opt/ppp/
+        run: rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --verbose --progress /home/runner/work/scoreboard/scoreboard/target.scoreboard-1.0.jar root@23.105.226.90:opt/ppp/
     
     
     
