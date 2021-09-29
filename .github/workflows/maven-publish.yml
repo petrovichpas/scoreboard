@@ -8,21 +8,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-#       - uses: actions/checkout@v1
+      - uses: actions/checkout@v1
         
-#       - name: Build with Maven
-#         run: mvn package -Dmaven.test.skip.exec
+      - name: Build with Maven
+        run: mvn package -Dmaven.test.skip.exec
+
       - run: set -eu
       - run: mkdir "$HOME/.ssh"
       - run: echo "${{ secrets.FOZZY_KEY }}" > "$HOME/.ssh/key"
       - run: chmod 600 "$HOME/.ssh/key"
       
       - name: UU
-        run: |
-         cd ../../
-         ls
-         cd ../../../../../
-         ls
+        run: pwd
+#          cd ../../
+#          ls
+#          cd ../../../../../
+#          ls
     
     
     
