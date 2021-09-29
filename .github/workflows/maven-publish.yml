@@ -14,7 +14,11 @@ jobs:
 #         run: mvn package -Dmaven.test.skip.exec
         
       - name: LL
-        run: ssh root@23.105.226.90
+        uses: scoreboard/ssh-action@master
+        with: 
+         host: 23.105.226.90
+         key: ${{secrets.FOZZY_KEY}}
+#         run: ssh root@23.105.226.90
         
       - name: UU
         run: ls
