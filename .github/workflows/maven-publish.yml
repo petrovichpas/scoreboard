@@ -18,12 +18,14 @@ jobs:
       - name: Build with Maven
         run: mvn package -Dmaven.test.skip.exec
         
-      - name: S1
-        run: pwd
+#       - name: S1
+#         run: pwd
         
-      - name: S2
-        run: ls
-
+#       - name: S2
+#         run: ls
+        
+      - name: Deploy
+        run: rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --verbose --progress /home/runner/work/scoreboard/scoreboard/target.scoreboard-1.0.jar root@23.105.226.90:opt/ppp/
     
     
     
