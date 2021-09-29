@@ -13,12 +13,6 @@ jobs:
       - name: Build with Maven
         run: mvn package -Dmaven.test.skip.exec
         
-#       - name: S1
-#         run: pwd
-        
-#       - name: S2
-#         run: ls
-        
       - run: set -eu
       - run: mkdir "$HOME/.ssh"
       - run: echo "${{secrets.FOZZY_KEY}}" > "$HOME/.ssh/key"
@@ -26,7 +20,7 @@ jobs:
       
       - name: Deploy
 #         run: scp /home/runner/work/scoreboard/scoreboard/target.scoreboard-1.0.jar root@23.105.226.90:opt/ppp/
-        run: rsync -e ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no --archive --compress --delete /home/runner/work/scoreboard/scoreboard/target.scoreboard-1.0.jar root@23.105.226.90:opt/ppp/
+        run: rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete /home/runner/work/scoreboard/scoreboard/target.scoreboard-1.0.jar root@23.105.226.90:opt/ppp/
     
     
     
