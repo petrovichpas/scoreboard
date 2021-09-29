@@ -18,12 +18,12 @@ jobs:
       - name: Build with Maven
         run: mvn package -Dmaven.test.skip.exec
         
-      - name: UU
+      - name: S1
         run: pwd
-#          cd ../../
-#          ls
-#          cd ../../../../../
-#          ls
+        
+      - name: S2
+        run: ls
+
     
     
     
