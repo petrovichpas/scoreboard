@@ -8,13 +8,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+#       - uses: actions/checkout@v1
         
-      - name: Build with Maven
-        run: mvn package -Dmaven.test.skip.exec
+#       - name: Build with Maven
+#         run: mvn package -Dmaven.test.skip.exec
+        
+      - name: LL
+        run: ssh root@23.105.226.90
         
       - name: UU
-        run: ls target
+        run: ls
     
     
     
