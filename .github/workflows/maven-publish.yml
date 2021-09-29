@@ -13,11 +13,8 @@ jobs:
       - name: Build with Maven
         run: mvn package
         
-      - name: BB
-        run: cd /target
-        
       - name: UU
-        run: ls
+        run: ls /target
     
     
     
