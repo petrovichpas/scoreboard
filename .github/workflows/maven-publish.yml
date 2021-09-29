@@ -18,9 +18,7 @@ jobs:
       - run: chmod 600 "$HOME/.ssh/key"
       
       - name: UU
-        run: |
-         cd opt/
-         ls
+        run: pwd
     
     
     
