@@ -21,12 +21,12 @@ jobs:
         
       - run: set -eu
       - run: mkdir "$HOME/.ssh"
-      - run: echo "${{ secrets.FOZZY_KEY }}" > "$HOME/.ssh/key"
+      - run: echo "${{secrets.FOZZY_KEY}}" > "$HOME/.ssh/key"
       - run: chmod 600 "$HOME/.ssh/key"
       
       - name: Deploy
 #         run: scp /home/runner/work/scoreboard/scoreboard/target.scoreboard-1.0.jar root@23.105.226.90:opt/ppp/
-        run: rsync -e ""ssh ${{ secret.ssh }} StrictHostKeyChecking=no" --archive --verbose --progress /home/runner/work/scoreboard/scoreboard/target.scoreboard-1.0.jar root@23.105.226.90:opt/ppp/
+        run: rsync -e "ssh ${{secret.ssh}} StrictHostKeyChecking=no" --archive --verbose --progress /home/runner/work/scoreboard/scoreboard/target.scoreboard-1.0.jar root@23.105.226.90:opt/ppp/
     
     
     
