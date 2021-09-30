@@ -26,7 +26,7 @@ jobs:
         run: scp target/scoreboard-1.0.jar root@23.105.226.90:/opt/
       
       - name: kill
-        run: ssh root@23.105.226.90 'exec kill $(pgrep -f scoreboard)'
+        run: ssh root@23.105.226.90 'kill $(pgrep -f scoreboard)'
         
 #       - name: Deploy
 #         run: ssh root@23.105.226.90 'nohup java -jar /opt/scoreboard-1.0.jar > /dev/null 2>&1 &'
