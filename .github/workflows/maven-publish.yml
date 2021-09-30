@@ -1,8 +1,6 @@
 name: CICD
 
-on:
-  [push]
-#     branches: -masret
+on: pull_request
 
 jobs:
   build:
