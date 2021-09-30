@@ -18,15 +18,15 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
          key: ${{secrets.FOZZY_KEY}}
-#          known_hosts: ${{secrets.KNOWN_HOSTS}}
+         known_hosts: ${{secrets.KNOWN_HOSTS}}
          
 #       - name: Adding Known Hosts
 #         run: ssh-keyscan -H ${{secrets.IP}} >> ~/.ssh/known_hosts
         
-      - name: copy jar
+      - name: Copy jar
         run: scp target/scoreboard-1.0.jar ${{secrets.FOZZY_NAME}}:/opt/
       
-      - name: kill
+      - name: Kill old process
         run: ssh ${{secrets.FOZZY_NAME}} 'pkill -f java'
         
       - name: Deploy
