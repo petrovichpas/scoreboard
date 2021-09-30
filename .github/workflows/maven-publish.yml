@@ -24,10 +24,10 @@ jobs:
         run: ssh-keyscan -H ${{secrets.IP}} >> ~/.ssh/known_hosts
         
       - name: copy jar
-        run: scp target/scoreboard-1.0.jar '${{secrets.FOZZY_KEY}}':/opt/
+        run: scp target/scoreboard-1.0.jar ${{secrets.FOZZY_NAME}}:/opt/
       
       - name: kill
-        run: ssh ${{secrets.FOZZY_KEY}} 'pkill -f java'
+        run: ssh ${{secrets.FOZZY_NAME}} 'pkill -f java'
         
       - name: Deploy
         run: ssh root@23.105.226.90 'nohup java -jar /opt/scoreboard-1.0.jar > /dev/null 2>&1 &'
