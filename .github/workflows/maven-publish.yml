@@ -32,6 +32,7 @@ jobs:
 #       - run: echo "${{secrets.FOZZY_KEY}}" > "$HOME/.ssh/key"
 #       - run: chmod 600 "$HOME/.ssh/key"
       
+      
 #       - name: Deploy
 #         run: scp /home/runner/work/scoreboard/scoreboard/target.scoreboard-1.0.jar root@23.105.226.90:opt/ppp/
 #         run: rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete /home/runner/work/scoreboard/scoreboard/target.scoreboard-1.0.jar root@23.105.226.90:opt/ppp/
