@@ -20,15 +20,18 @@ jobs:
          key: ${{secrets.FOZZY_KEY}}
          known_hosts: ${{secrets.KNOWN_HOSTS}}
          
-#       - name: Adding Known Hosts
+#       - name: Adding Known Hosts можно пропустить
 #         run: ssh-keyscan -H ${{secrets.IP}} >> ~/.ssh/known_hosts
         
-      - name: Copy jar
-        run: scp target/scoreboard-1.0.jar ${{secrets.FOZZY_NAME}}:/opt/
-      
-      - name: Kill old process
-        run: ssh ${{secrets.FOZZY_NAME}} 'pkill -f java'
+#       - name: Copy jar
+#         run: scp target/scoreboard-1.0.jar ${{secrets.FOZZY_NAME}}:/opt/
         
-      - name: Deploy
-        run: ssh root@23.105.226.90 'nohup java -jar /opt/scoreboard-1.0.jar > /dev/null 2>&1 &'
+      - name: Copy war
+        run: scp target/scoreboard.war ${{secrets.FOZZY_NAME}}:/opt/tomcat/webapps/
+      
+#       - name: Kill old process
+#         run: ssh ${{secrets.FOZZY_NAME}} 'pkill -f java'
+        
+#       - name: Deploy
+#         run: ssh root@23.105.226.90 'nohup java -jar /opt/scoreboard-1.0.jar > /dev/null 2>&1 &'
         
