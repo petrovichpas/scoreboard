@@ -33,4 +33,4 @@ jobs:
 #        run: ssh root@23.105.226.90 'nohup java -jar /opt/scoreboard-1.0.jar > /dev/null 2>&1 &'
 
       - name: Copy war
-        run: scp target/.war ${{secrets.FOZZY_NAME}}:/opt/tomcat/webapps/
+        run: scp target/ROOT.war ${{secrets.FOZZY_NAME}}:/opt/tomcat/webapps/
