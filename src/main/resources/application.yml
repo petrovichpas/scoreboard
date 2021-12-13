@@ -8,6 +8,7 @@ spring:
     username: 'root'
     password: '0131'
   jpa:
+    open-in-view: false
     generate-ddl: true
     hibernate:
       ddl-auto: update
