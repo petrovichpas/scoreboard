@@ -75,8 +75,8 @@ function getBoard() {
         url: "/hockey/get_board",
         data: {id: id},
         success: result => {
-            $("#homeName").val(result.homeName)
-            $("#awayName").val(result.awayName)
+            // $("#homeName").val(result.homeName)
+            // $("#awayName").val(result.awayName)
             $("#homeScore").text(result.homeScore)
             $("#time").text(String(~~(result.currentTime / 60)).padStart(2, '0') + ':' + String(result.currentTime % 60).padStart(2, '0'))
             $("#awayScore").text(result.awayScore)
