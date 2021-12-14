@@ -69,15 +69,14 @@ public class HockeyService {
                 response = "homeScore:" + board.getHomeScore();
                 break;
             case "periodPlus":
-                if (board.getPeriod().equals("1")) board.setPeriod("2");
-                else if (board.getPeriod().equals("2")) board.setPeriod("3");
-                else if (board.getPeriod().equals("3")) board.setPeriod("OT");
+                if (board.getPeriod().equals("OT")) board.setPeriod("1");
+                else board.setPeriod(String.valueOf(Integer.parseInt(board.getPeriod()) + 1));
                 response = "period:" + board.getPeriod();
                 break;
             case "periodMinus":
-                if (board.getPeriod().equals("OT")) board.setPeriod("3");
-                else if (board.getPeriod().equals("3")) board.setPeriod("2");
-                else if (board.getPeriod().equals("2")) board.setPeriod("1");
+                if (board.getPeriod().equals("OT"));
+                else if (Integer.parseInt(board.getPeriod()) > 1) board.setPeriod(String.valueOf(Integer.parseInt(board.getPeriod()) - 1));
+                else if (Integer.parseInt(board.getPeriod()) <= 1) board.setPeriod("OT");
                 response = "period:" + board.getPeriod();
                 break;
             case "awayScorePlus":
