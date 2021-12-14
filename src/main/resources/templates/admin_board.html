@@ -37,7 +37,8 @@
                 <div class="period mb-4">
                     <div class="buttons-group mb-4 bordered">
                         <button value="periodMinus" class="btn btn-primary buttons-group_button" type="button" onclick="plusOrMinusOne(value)">-</button>
-                        <span id="period" th:text="((${board.period} > 0) ? ${board.period} : 'OT')" class="buttons-group_value"/>
+                        <span id="period" th:text="${board.period}" class="buttons-group_value"/>
+<!--                        <span id="period" th:text="((${board.period} > 0) ? ${board.period} : 'OT')" class="buttons-group_value"/>-->
                         <button value="periodPlus" class="btn btn-primary buttons-group_button" type="button" onclick="plusOrMinusOne(value)">+</button>
                     </div>
                     <div class="time bordered mb-4">

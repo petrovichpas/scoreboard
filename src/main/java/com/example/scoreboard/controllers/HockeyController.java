@@ -120,7 +120,7 @@ public class HockeyController {
         board.setAwayName("");
         board.setHomeScore(0);
         board.setAwayScore(0);
-        board.setPeriod(1);
+        board.setPeriod("1");
         board.setCurrentTime(board.isCountdownModeSelected() ? board.getMaxTime() : 0);
     }
 

@@ -25,8 +25,8 @@ public class HockeyScoreBoard {
     @Column(name = "away_score")
     private Integer awayScore;
 
-    @Column
-    private Integer period;
+    @Column(nullable = false)
+    private String period;
 
     @Column(name = "current_t")
     private Integer currentTime;
@@ -45,7 +45,7 @@ public class HockeyScoreBoard {
         maxTime = 1200;
         homeScore = 0;
         awayScore = 0;
-        period = 1;
+        period = "1";
         isCountdownModeSelected = false;
         startStop = "Start";
     }

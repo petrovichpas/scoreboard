@@ -77,11 +77,11 @@ function getBoard() {
         success: result => {
             // $("#homeName").val(result.homeName)
             // $("#awayName").val(result.awayName)
-            $("#homeScore").text(result.homeScore)
+            // $("#homeScore").text(result.homeScore)
             $("#time").text(String(~~(result.currentTime / 60)).padStart(2, '0') + ':' + String(result.currentTime % 60).padStart(2, '0'))
-            $("#awayScore").text(result.awayScore)
-            if (result.period > 0) $("#period").text(result.period)
-            else $("#period").text('OT');
+            // $("#awayScore").text(result.awayScore)
+            // if (result.period <= 3 ) $("#period").text(result.period)
+            // else $("#period").text('OT');
         }
     });
 }

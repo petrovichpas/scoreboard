@@ -50,8 +50,9 @@
                     $("#homeScore").text(result.homeScore)
                     $("#time").text(String(~~(result.currentTime / 60)).padStart(2, '0') + ':' + String(result.currentTime % 60).padStart(2, '0'))
                     $("#awayScore").text(result.awayScore)
-                    if (result.period > 0) $("#period").text(result.period)
-                    else $("#period").text('OT');
+                    $("#period").text(result.period)
+                    // if (result.period < 4) $("#period").text(result.period)
+                    // else $("#period").text('OT');
                 }
             });
         }
