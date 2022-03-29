@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/hockey/boards/**").hasRole("USER")
                 .anyRequest().permitAll()
                 .and()
-                .csrf().disable() // отключение проверки токена
+//                .csrf().disable() // отключение проверки токена
 //                .cors().disable() // доступ к апи с других доменов
                 .formLogin()
                 .loginPage("/login")
