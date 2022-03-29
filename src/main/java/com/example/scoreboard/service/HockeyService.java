@@ -1,7 +1,7 @@
 package com.example.scoreboard.service;
 
-import com.example.scoreboard.entites.HockeyScoreBoard;
-import com.example.scoreboard.repositories.HockeyScoreBoardRepository;
+import com.example.scoreboard.entites.HockeyBoard;
+import com.example.scoreboard.repositories.HockeyBoardRepository;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,28 +12,30 @@ import java.util.Set;
 
 @Service
 @Data
-//@Scope("prototype")
 public class HockeyService {
-    private final HockeyScoreBoardRepository hockeyScoreBoardRepository;
-    private Set<HockeyScoreBoard> boardSet = new LinkedHashSet<>();
+    private final HockeyBoardRepository hockeyScoreBoardRepository;
+    private Set<HockeyBoard> boardSet;
 
     @Autowired
-    public HockeyService(HockeyScoreBoardRepository hockeyScoreBoardRepository) {
+    public HockeyService(HockeyBoardRepository hockeyScoreBoardRepository) {
         this.hockeyScoreBoardRepository = hockeyScoreBoardRepository;
+        boardSet = new LinkedHashSet();
         boardSet.addAll(findAll());
     }
 
-    public List<HockeyScoreBoard> findAll() {
+    public List<HockeyBoard> findAll() {
         return hockeyScoreBoardRepository.findAll();
     }
 
-    public HockeyScoreBoard findById(Long id) {
+    public HockeyBoard findById(Long id) {
         return boardSet.stream().filter(e-> e.getId().equals(id)).findFirst().get();
+//        return hockeyScoreBoardRepository.findById(id).get();
     }
 
-    public HockeyScoreBoard save(HockeyScoreBoard hockeyScoreBoard) {
-        boardSet.add(hockeyScoreBoardRepository.save(hockeyScoreBoard));
+    public HockeyBoard save(HockeyBoard board) {
+        boardSet.add(hockeyScoreBoardRepository.save(board));
         return boardSet.stream().skip(boardSet.size()-1).findFirst().get();
+//        return hockeyScoreBoardRepository.save(hockeyScoreBoard);
     }
 
     public void deleteById(Long id) {
@@ -41,7 +43,7 @@ public class HockeyService {
     }
 
     public String plusOrMinusOne(String param, Long id) {
-        HockeyScoreBoard board = findById(id);
+        HockeyBoard board = findById(id);
         String response = "No matches";
         switch (param) {
             case "minutesPlus":
@@ -93,7 +95,7 @@ public class HockeyService {
     }
 
     public String start(Long id) {
-        HockeyScoreBoard board = findById(id);
+        HockeyBoard board = findById(id);
 
         if (board.getStartStop().equals("Start")) {
             board.setStartStop("Stop");
@@ -101,6 +103,7 @@ public class HockeyService {
                 while (board.getStartStop().equals("Stop")){
                     try {
                         Thread.sleep(999);
+                        if (board.getPenaltyTime() > 0) board.setPenaltyTime(board.getPenaltyTime() - 1);
 
                         if (board.isCountdownModeSelected()){
                             if (board.getCurrentTime() <= 0) {

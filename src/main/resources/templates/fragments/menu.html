@@ -1,28 +1,32 @@
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="menu">
+    <div class="container-fluid">
+    <a class="navbar-brand" sec:authorize="isAnonymous()">ScoreBox</a>
+    <a class="navbar-brand" sec:authorize="isAuthenticated()" sec:authentication="name"></a>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="menu">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">BS</a>
-        <button class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNav"
-                aria-controls="navbarNav"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" th:href="@{'/hockey/main'}">Log in</a>
+                <a class="nav-link" th:href="@{'/'}">Main</a>
             </li>
+
             <li class="nav-item">
-              <a class="nav-link" th:href="@{'/hockey/main'}">Main</a>
+                <a class="nav-link" th:href="@{'/hockey/boards'}">My boards</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{'/hockey/boards'}">My boards</a>
+            <li  class="nav-item" sec:authorize="isAnonymous()">
+              <a th:href="@{/login}" class="btn btn-outline-secondary">Sign in</a>
             </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+
+            <li class="nav-item" sec:authorize="isAuthenticated()" >
+                <form th:action="@{/logout}" method="POST">
+                    <button class="btn btn-outline-secondary" type="submit">Sign out</button>
+                </form>
+            </li>
+      </ul>
+    </div>
+  </div>
+</nav>

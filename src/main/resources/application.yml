@@ -1,5 +1,7 @@
 server:
   port: 8080
+  servlet:
+    context-path: '/'
 
 spring:
   datasource:
@@ -17,3 +19,15 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
   thymeleaf:
     encoding: UTF-8
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          google:
+#            clientId: 679205973197-a9t1ib7io4kijjd3mu8iumgkd74os2bt.apps.googleusercontent.com
+#            clientSecret: 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
+#            clientAuthenticationScheme: form
+#            scope: openid,email,profile
+#            accessTokenUri: https://www.googleapis.com/oauth2/v4/token
+#            userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
+#            userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo

@@ -16,10 +16,12 @@
     <link th:href="@{/css/dev.css}" rel="stylesheet"/>
     <link th:href="@{/css/main.css}" rel="stylesheet"/>
     <title>Board panel</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
 </head>
 
 <body class="page">
 <header th:insert="fragments/menu :: menu"/>
+
 <main class="page_max-wrapper">
     <input id="id" name="id" th:value="${board.id}" type="hidden" class="form-control">
     <div class="score-board">
@@ -38,18 +40,9 @@
                     </button>
                     <div class="collapse" id="collapseExample">
                         <div class="card card-body">
-                            <input type="number" class="form-control">
-                            <input type="time" list="penalty">
-                            <datalist id="penalty">
-                                <option value="02:00">
-                                <option value="04:00">
-                            </datalist>
-
-                            <input type="number" class="form-control"/>
-                            <input type="time" list="penalty">
-
-                            <input type="number" class="form-control"/>
-                            <input type="time" list="penalty">
+                            <input type="number" placeholder="num player" class="form-control">
+                            <input type="text" id="penalty" name="penalty" maxlength="5" class="form-control mb-3" th:value="${board.penaltyTime}" onchange="changeInput(value, name)"/>
+                            <button type="button" class="btn btn-danger btn-lg btn-block" name="penalty" th:text="Del" th:value="${board.penaltyTime}"/>
                         </div>
                     </div>
                 </div>
@@ -66,6 +59,7 @@
                             <button value="minutesPlus" class="btn btn-success buttons-group_button" type="button" onclick="plusOrMinusOne(value)">+</button>
                             <button value="minutesMinus" class="btn btn-success buttons-group_button" type="button" onclick="plusOrMinusOne(value)">-</button>
                         </div>
+<!--                        <div th:if="${board.currentTime < 1}" th:text="'00:00'"class="time_value"/>-->
                         <div class="time_value" id="time" th:text="${#numbers.formatInteger(board.currentTime/60, 2) + ':' + #numbers.formatInteger(board.currentTime%60, 2)}"/>
                         <div class="time_controls">
                             <button value="secondsPlus" class="btn btn-success buttons-group_button" type="button" onclick="plusOrMinusOne(value)">+</button>
@@ -102,7 +96,9 @@
                                 <input id="maxTime" name="maxTime" th:value="${board.maxTime / 60}" type="number" class="form-control" onchange="changeInput(value, name)"/>
                             </div>
                             <div class="btn-group" role="group" aria-label="Basic example">
-                                <button id="reset" value="reset" type="button" class="btn btn-primary">Reset</button>
+                                <form th:action="@{/hockey/reset(id=${board.id})}" th:method="POST">
+                                    <button type="submit" class="btn btn-primary">Reset</button>
+                                </form>
                                 <button id="swap" type="button" class="btn btn-primary">Swap</button>
                             </div>
                         </div>

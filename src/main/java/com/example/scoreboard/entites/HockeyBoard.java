@@ -1,13 +1,17 @@
 package com.example.scoreboard.entites;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Data
-@Table(name = "hockey")
-public class HockeyScoreBoard {
+@Table(name = "boards")
+@NoArgsConstructor
+public class HockeyBoard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +35,9 @@ public class HockeyScoreBoard {
     @Column(name = "current_t")
     private Integer currentTime;
 
+    @Transient
+    private Integer penaltyTime;
+
     @Column(name = "max_t")
     private Integer maxTime;
 
@@ -40,7 +47,13 @@ public class HockeyScoreBoard {
     @Column(nullable = false)
     private String startStop;
 
-    public HockeyScoreBoard() {
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public HockeyBoard(User user) {
+        this.user = user;
         currentTime = 0;
         maxTime = 1200;
         homeScore = 0;
@@ -48,5 +61,18 @@ public class HockeyScoreBoard {
         period = "1";
         isCountdownModeSelected = false;
         startStop = "Start";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HockeyBoard that = (HockeyBoard) o;
+        return id == that.id && Objects.equals(homeName, that.homeName) && Objects.equals(awayName, that.awayName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, homeName, awayName);
     }
 }
