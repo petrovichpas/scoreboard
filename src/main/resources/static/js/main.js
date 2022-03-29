@@ -1,4 +1,4 @@
-$(document).ready(() => {
+// $(document).ready(() => {
 
 
 const id = document.getElementById("id").value;
@@ -107,4 +107,4 @@ function getBoard() {
 }
 
 setInterval(getBoard,1000);
-});
+// });
