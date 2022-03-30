@@ -57,6 +57,7 @@ function changeInput(val, name){
         url: "/hockey/change_input",
         data: {value: val, name: name, id: id},
         success: result => {
+            // $("#penalty").val(result.penaltyTime);
             $("#penalty").val(String(~~(result.penaltyTime / 60)).padStart(2, '0') + ':' + String(result.penaltyTime % 60).padStart(2, '0'))
         }
     });

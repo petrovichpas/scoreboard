@@ -115,13 +115,14 @@ public class HockeyController {
             case "penalty":
                 if (value.contains(":")){
                     String[] time = value.split(":");
-                    board.setPenaltyTime(Integer.parseInt(time[0]) + Integer.parseInt(time[1]) * 60);
-                } else {
-                    if (value.length() > 3) board.setPenaltyTime(Integer.parseInt(value.substring(0, 2)) + Integer.parseInt(value.substring(2, 4)) * 60);
-                    if (value.length() == 3) board.setPenaltyTime(Integer.parseInt(value.substring(0, 2)) + Integer.parseInt(value.substring(2, 3)) * 60);
-                    if (value.length() == 2) board.setPenaltyTime(Integer.parseInt(value.substring(0, 2)));
-                    if (value.length() == 1) board.setPenaltyTime(Integer.parseInt(value.substring(0, 1)));
+                    board.setPenaltyTime(Integer.parseInt(time[0]) * 60 + Integer.parseInt(time[1]));
                 }
+//                else {
+//                    if (value.length() > 3) board.setPenaltyTime(Integer.parseInt(value.substring(0, 2)) + Integer.parseInt(value.substring(2, 4)) * 60);
+//                    if (value.length() == 3) board.setPenaltyTime(Integer.parseInt(value.substring(0, 2)) + Integer.parseInt(value.substring(2, 3)) * 60);
+//                    if (value.length() == 2) board.setPenaltyTime(Integer.parseInt(value.substring(0, 2)));
+//                    if (value.length() == 1) board.setPenaltyTime(Integer.parseInt(value.substring(0, 1)));
+//                }
                 break;
         }
         saveOrUpdateBoard(board);

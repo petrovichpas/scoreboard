@@ -41,7 +41,7 @@
                     <div class="collapse" id="collapseExample">
                         <div class="card card-body">
                             <input type="number" placeholder="num player" class="form-control">
-                            <input type="text" id="penalty" name="penalty" maxlength="5" class="form-control mb-3" th:value="${board.penaltyTime}" onchange="changeInput(value, name)"/>
+                            <input type="time" id="penalty" name="penalty" maxlength="5" class="form-control mb-3" th:value="${board.penaltyTime}" onblur="changeInput(value, name)"/>
                             <button type="button" class="btn btn-danger btn-lg btn-block" name="penalty" th:text="Del" th:value="${board.penaltyTime}"/>
                         </div>
                     </div>
