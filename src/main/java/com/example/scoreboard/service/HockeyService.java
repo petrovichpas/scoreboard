@@ -48,46 +48,46 @@ public class HockeyService {
         switch (param) {
             case "minutesPlus":
                 board.setCurrentTime(board.getCurrentTime() + 60);
-                response = "time:" + board.getCurrentTime();
+                response = "currentTime-" + timeToString(board.getCurrentTime());
                 break;
             case "minutesMinus":
                 board.setCurrentTime(board.getCurrentTime() >= 60 ? board.getCurrentTime() - 60 : board.getCurrentTime());
-                response = "time:" + board.getCurrentTime();
+                response = "currentTime-" + timeToString(board.getCurrentTime());
                 break;
             case "secondsPlus":
                 board.setCurrentTime(board.getCurrentTime() + 1);
-                response = "time:" + board.getCurrentTime();
+                response = "currentTime-" + timeToString(board.getCurrentTime());
                 break;
             case "secondsMinus":
                 board.setCurrentTime(board.getCurrentTime() > 0 ? board.getCurrentTime() - 1 : board.getCurrentTime());
-                response = "time:" + board.getCurrentTime();
+                response = "currentTime-" + timeToString(board.getCurrentTime());
                 break;
             case "homeScorePlus":
                 board.setHomeScore(board.getHomeScore() + 1);
-                response = "homeScore:" + board.getHomeScore();
+                response = "homeScore-" + board.getHomeScore();
                 break;
             case "homeScoreMinus":
                 board.setHomeScore(board.getHomeScore() > 0 ? board.getHomeScore() - 1 : 0);
-                response = "homeScore:" + board.getHomeScore();
+                response = "homeScore-" + board.getHomeScore();
                 break;
             case "periodPlus":
                 if (board.getPeriod().equals("OT")) board.setPeriod("1");
                 else board.setPeriod(String.valueOf(Integer.parseInt(board.getPeriod()) + 1));
-                response = "period:" + board.getPeriod();
+                response = "period-" + board.getPeriod();
                 break;
             case "periodMinus":
                 if (board.getPeriod().equals("OT"));
                 else if (Integer.parseInt(board.getPeriod()) > 1) board.setPeriod(String.valueOf(Integer.parseInt(board.getPeriod()) - 1));
                 else if (Integer.parseInt(board.getPeriod()) <= 1) board.setPeriod("OT");
-                response = "period:" + board.getPeriod();
+                response = "period-" + board.getPeriod();
                 break;
             case "awayScorePlus":
                 board.setAwayScore(board.getAwayScore() + 1);
-                response = "awayScore:" + board.getAwayScore();
+                response = "awayScore-" + board.getAwayScore();
                 break;
             case "awayScoreMinus":
                 board.setAwayScore(board.getAwayScore() > 0 ? board.getAwayScore() - 1 : 0);
-                response = "awayScore:" + board.getAwayScore();
+                response = "awayScore-" + board.getAwayScore();
                 break;
         }
         save(board);
@@ -126,5 +126,16 @@ public class HockeyService {
         } else board.setStartStop("Start");
         save(board);
         return board.getStartStop();
+    }
+
+    public String timeToString(Integer seconds){
+        if (seconds > 0)
+            return String.format("%02d", seconds / 60) + ":" + String.format("%02d", seconds % 60);
+        else
+            return "00:00";
+    }
+
+    public Integer timeToSeconds(String time){
+        return Integer.parseInt(time.substring(0, 2)) * 60 + Integer.parseInt(time.substring(3, 5));
     }
 }

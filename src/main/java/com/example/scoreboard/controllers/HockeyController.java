@@ -5,6 +5,8 @@ import com.example.scoreboard.entites.User;
 import com.example.scoreboard.service.HockeyService;
 import com.example.scoreboard.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.HashMap;
 
 @Controller
 @RequestMapping("/hockey")
@@ -63,6 +66,7 @@ public class HockeyController {
     }
 
     @PostMapping("/save")
+    @Transactional
     public String saveOrUpdateBoard(@ModelAttribute HockeyBoard board) {
         hockeyService.save(board);
         return "redirect:/hockey/boards";
@@ -72,17 +76,12 @@ public class HockeyController {
     @Transactional
     @ResponseBody
     public String plusOrMinusOne(@RequestParam("action") String param, @RequestParam("id") Long id) {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return hockeyService.plusOrMinusOne(param, id);
     }
 
-    @GetMapping("/get_board")
-    @ResponseBody
-    public HockeyBoard getBoard(@RequestParam("id") Long id) {
-        return hockeyService.findById(id);
-    }
-
     @PostMapping("/mode")
-    @Transactional
+    @ResponseStatus(value = HttpStatus.OK)
     public void changeMode(@RequestParam("id") Long id) {
         HockeyBoard board = hockeyService.findById(id);
         board.setCountdownModeSelected(!board.isCountdownModeSelected());
@@ -97,11 +96,27 @@ public class HockeyController {
         saveOrUpdateBoard(board);
     }
 
+    @GetMapping("/get_board")
+    public ResponseEntity getBoard(@RequestParam("id") Long id) {
+        HashMap<String, String> map = new HashMap();
+        HockeyBoard board = hockeyService.findById(id);
+
+        map.put("homeName", board.getHomeName());
+        map.put("awayName", board.getAwayName());
+        map.put("homeScore", board.getHomeScore().toString());
+        map.put("awayScore", board.getAwayScore().toString());
+        map.put("period", board.getPeriod());
+        map.put("currentTime", hockeyService.timeToString(board.getCurrentTime()));
+        map.put("penaltyTime", hockeyService.timeToString(board.getPenaltyTime()));
+        return ResponseEntity.ok(map);
+    }
+
     @PostMapping("/change_input")
     @Transactional
-    @ResponseBody
-    public HockeyBoard changeInput(@RequestParam("value") String value, @RequestParam("name") String name, @RequestParam("id") Long id) {
+    @ResponseStatus(value = HttpStatus.OK)
+    public void changeInput(@RequestParam("value") String value, @RequestParam("name") String name, @RequestParam("id") Long id) {
         HockeyBoard board = hockeyService.findById(id);
+
         switch (name) {
             case "homeName":
                 board.setHomeName(value);
@@ -112,25 +127,23 @@ public class HockeyController {
             case "maxTime":
                 board.setMaxTime(Integer.parseInt(value) * 60);
                 break;
-            case "penalty":
-                if (value.contains(":")){
-                    String[] time = value.split(":");
-                    board.setPenaltyTime(Integer.parseInt(time[0]) * 60 + Integer.parseInt(time[1]));
-                }
+            case "penaltyTime":
+                board.setPenaltyTime(hockeyService.timeToSeconds(value));
+                break;
+            case "penaltyNumber":
+                board.setPenaltyNumber(value);
+                break;
 //                else {
 //                    if (value.length() > 3) board.setPenaltyTime(Integer.parseInt(value.substring(0, 2)) + Integer.parseInt(value.substring(2, 4)) * 60);
 //                    if (value.length() == 3) board.setPenaltyTime(Integer.parseInt(value.substring(0, 2)) + Integer.parseInt(value.substring(2, 3)) * 60);
 //                    if (value.length() == 2) board.setPenaltyTime(Integer.parseInt(value.substring(0, 2)));
 //                    if (value.length() == 1) board.setPenaltyTime(Integer.parseInt(value.substring(0, 1)));
 //                }
-                break;
         }
         saveOrUpdateBoard(board);
-        return board;
     }
 
     @PostMapping("/reset")
-    @Transactional
     public String reset(@RequestParam("id") Long id) {
         HockeyBoard board = hockeyService.findById(id);
         board.setHomeName("");
@@ -144,14 +157,14 @@ public class HockeyController {
     }
 
     @PostMapping("/swap")
-    @Transactional
     @ResponseBody
     public HockeyBoard swap(@RequestParam("id") Long id) {
         HockeyBoard board = hockeyService.findById(id);
         String tempName = board.getHomeName();
         board.setHomeName(board.getAwayName());
         board.setAwayName(tempName);
-        return hockeyService.save(board);
+        saveOrUpdateBoard(board);
+        return board;
     }
 
     @PostMapping("/start")

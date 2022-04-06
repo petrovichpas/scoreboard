@@ -31,7 +31,7 @@
         <footer class="score-board_footer">
             <div class="score-board_timer">
           <span>
-            <label id="time" th:text="${#numbers.formatInteger(board.currentTime/60, 2) + ':' + #numbers.formatInteger(board.currentTime%60, 2)}"/>
+            <label id="currentTime" th:text="((${board.currentTime} < 1) ?  '00:00' : ${#numbers.formatInteger(board.currentTime/60, 2) + ':' + #numbers.formatInteger(board.currentTime%60, 2)})"/>
           </span>
             </div>
         </footer>
@@ -48,11 +48,9 @@
                     $("#homeName").val(result.homeName)
                     $("#awayName").val(result.awayName)
                     $("#homeScore").text(result.homeScore)
-                    $("#time").text(String(~~(result.currentTime / 60)).padStart(2, '0') + ':' + String(result.currentTime % 60).padStart(2, '0'))
+                    $("#currentTime").text(result.currentTime)
                     $("#awayScore").text(result.awayScore)
                     $("#period").text(result.period)
-                    // if (result.period < 4) $("#period").text(result.period)
-                    // else $("#period").text('OT');
                 }
             });
         }

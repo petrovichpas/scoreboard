@@ -36,7 +36,10 @@ public class HockeyBoard {
     private Integer currentTime;
 
     @Transient
-    private Integer penaltyTime;
+    private Integer penaltyTime = 0;
+
+    @Transient
+    private String penaltyNumber;
 
     @Column(name = "max_t")
     private Integer maxTime;
