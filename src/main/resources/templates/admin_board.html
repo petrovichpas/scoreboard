@@ -40,8 +40,8 @@
                     </button>
                     <div class="collapse" id="collapseExample">
                         <div class="card card-body">
-                            <input type="tel" maxlength="2" name="penaltyNumber" placeholder="Player number" class="form-control" th:value="${board.penaltyNumber}" onblur="changeInput(value, name)">
-                            <input type="time" id="penaltyTime" name="penaltyTime" class="form-control mb-3" th:value="((${board.penaltyTime} < 1) ?  '00:00' : ${#numbers.formatInteger(board.penaltyTime/60, 2) + ':' + #numbers.formatInteger(board.penaltyTime%60, 2)})" onblur="changeInput(value, name)"/>
+                            <input type="tel" maxlength="2" name="penaltyNumber" placeholder="Player number" class="form-control" th:value="${board.penaltyNumber}" onchange="changeInput(value, name)">
+                            <input type="time" id="penaltyTime" name="penaltyTime" class="form-control mb-3" th:value="((${board.penaltyTime} < 1) ?  '00:00' : ${#numbers.formatInteger(board.penaltyTime/60, 2) + ':' + #numbers.formatInteger(board.penaltyTime%60, 2)})" onchange="changeInput(value, name)"/>
                             <button type="button" class="btn btn-danger btn-lg btn-block" name="penal" th:text="Del"/>
                         </div>
                     </div>
