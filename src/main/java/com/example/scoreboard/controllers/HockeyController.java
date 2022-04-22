@@ -107,8 +107,33 @@ public class HockeyController {
         map.put("awayScore", board.getAwayScore().toString());
         map.put("period", board.getPeriod());
         map.put("currentTime", hockeyService.timeToString(board.getCurrentTime()));
-        map.put("penaltyTime", hockeyService.timeToString(board.getPenaltyTime()));
+//        map.put("penaltyTime", hockeyService.timeToString(board.getPenaltyTime()));
+
         return ResponseEntity.ok(map);
+    }
+
+    @PostMapping("/add_penalty")
+    public String addPenalty(@RequestParam("penaltyNumber") String number, @RequestParam("penaltyTime") String time, @RequestParam("id") Long id) {
+        HockeyBoard board = hockeyService.findById(id);
+
+        if (number.isEmpty())
+            board.addPenalty(null, 120);
+
+        else if (board.getPenalty().containsKey(null)){
+            board.getPenalty().remove(null);
+            board.addPenalty(number, hockeyService.timeToSeconds(time));
+        } else
+            board.addPenalty(number, hockeyService.timeToSeconds(time));
+        return "redirect:/hockey/board/" + id;
+    }
+
+    @PostMapping("/delete_penalty")
+    public String deletePenalty(@RequestParam("penaltyNumber") String number, @RequestParam("penaltyTime") String time, @RequestParam("id") Long id) {
+        HockeyBoard board = hockeyService.findById(id);
+
+        if (board.getPenalty().containsKey(number))
+            board.getPenalty().remove(number);
+        return "redirect:/hockey/board/" + id;
     }
 
     @PostMapping("/change_input")
@@ -128,7 +153,8 @@ public class HockeyController {
                 board.setMaxTime(Integer.parseInt(value) * 60);
                 break;
             case "penaltyTime":
-                board.setPenaltyTime(hockeyService.timeToSeconds(value));
+//                board.setPenaltyTime(hockeyService.timeToSeconds(value));
+                board.addPenalty(null, 120);
                 break;
             case "penaltyNumber":
                 board.setPenaltyNumber(value);

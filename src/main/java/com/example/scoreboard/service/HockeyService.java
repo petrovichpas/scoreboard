@@ -103,7 +103,7 @@ public class HockeyService {
                 while (board.getStartStop().equals("Stop")){
                     try {
                         Thread.sleep(999);
-                        if (board.getPenaltyTime() > 0) board.setPenaltyTime(board.getPenaltyTime() - 1);
+//                        if (board.getPenaltyTime() > 0) board.setPenaltyTime(board.getPenaltyTime() - 1);
 
                         if (board.isCountdownModeSelected()){
                             if (board.getCurrentTime() <= 0) {

@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>stream.scoregame</groupId>
-    <artifactId>scoreboard</artifactId>
+    <artifactId>scoregame</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
-    <name>scoreboard</name>
+    <name>scoregame</name>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

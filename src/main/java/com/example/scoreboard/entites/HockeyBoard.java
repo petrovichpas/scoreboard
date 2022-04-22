@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -36,7 +38,12 @@ public class HockeyBoard {
     private Integer currentTime;
 
     @Transient
-    private Integer penaltyTime = 0;
+    private Map<String, Integer> penalty = new HashMap();
+//    private Integer penaltyTime = 0;
+
+    public void addPenalty(String num, Integer time) {
+        penalty.put(num, time);
+    }
 
     @Transient
     private String penaltyNumber;

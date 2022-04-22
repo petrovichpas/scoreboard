@@ -35,17 +35,46 @@
                         <button value="homeScorePlus" class="btn btn-primary buttons-group_button" type="button" onclick="plusOrMinusOne(value)">+</button>
                     </div>
 
-                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                        Add penalty
-                    </button>
-                    <div class="collapse" id="collapseExample">
-                        <div class="card card-body">
-                            <input type="tel" maxlength="2" name="penaltyNumber" placeholder="Player number" class="form-control" th:value="${board.penaltyNumber}" onblur="changeInput(value, name)">
-                            <input type="time" id="penaltyTime" name="penaltyTime" class="form-control mb-3" th:value="((${board.penaltyTime} < 1) ?  '00:00' : ${#numbers.formatInteger(board.penaltyTime/60, 2) + ':' + #numbers.formatInteger(board.penaltyTime%60, 2)})" onblur="changeInput(value, name)"/>
-                            <button type="button" class="btn btn-danger btn-lg btn-block" name="penal" th:text="Del"/>
-                        </div>
-                    </div>
+<!--                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">-->
+<!--                        Add penalty-->
+<!--                    </button>-->
+<!--                    <div class="collapse" id="collapseExample">-->
+<!--                        <div class="card card-body">-->
+<!--                            <input type="tel" maxlength="2" name="penaltyNumber" placeholder="Player number" class="form-control" th:value="${board.penaltyNumber}" onblur="changeInput(value, name)">-->
+<!--                            <input type="time" id="penaltyTime" name="penaltyTime" class="form-control mb-3" th:value="((${board.penaltyTime} < 1) ?  '00:00' : ${#numbers.formatInteger(board.penaltyTime/60, 2) + ':' + #numbers.formatInteger(board.penaltyTime%60, 2)})" onblur="changeInput(value, name)"/>-->
+<!--                            <button type="button" class="btn btn-danger btn-lg btn-block" name="penal" th:text="Del"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </div>
+
+                <form th:action="@{/hockey/add_penalty}" method="POST">
+                    <input name="id" th:value="${board.id}" type="hidden">
+                    <input type="hidden" name="penaltyNumber" value="">
+                    <input type="hidden" name="penaltyTime" value="02:00">
+                    <button type="submit" th:text="Add"/>
+                </form>
+
+                <table id="penalty_table">
+                    <tbody>
+                        <tr th:each="b : ${board.penalty}">
+                            <td>
+                                <form th:action="@{/hockey/add_penalty}" method="POST" style="float: left;">
+                                    <input name="id" th:value="${board.id}" type="hidden">
+                                    <input type="tel" maxlength="2" name="penaltyNumber" th:value="${b.key}">
+                                    <input type="time" name="penaltyTime" th:value="((${b.value} < 1) ?  '00:00' : ${#numbers.formatInteger(b.value/60, 2) + ':' + #numbers.formatInteger(b.value%60, 2)})"/>
+                                    <button type="submit" th:text="V"/>
+                                </form>
+                                <form th:action="@{/hockey/delete_penalty}" method="POST" style="float: right;">
+                                    <input name="id" th:value="${board.id}" type="hidden">
+                                    <input name="penaltyNumber" th:value="${b.key}" type="hidden">
+                                    <input name="penaltyTime" th:value="((${b.value} < 1) ?  '00:00' : ${#numbers.formatInteger(b.value/60, 2) + ':' + #numbers.formatInteger(b.value%60, 2)})" type="hidden"/>
+                                    <button type="submit" th:text="X"/>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
 
                 <div class="period mb-4">
                     <div class="buttons-group mb-4 bordered">
