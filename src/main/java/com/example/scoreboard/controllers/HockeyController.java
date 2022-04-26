@@ -1,7 +1,6 @@
 package com.example.scoreboard.controllers;
 
 import com.example.scoreboard.entites.HockeyBoard;
-import com.example.scoreboard.entites.User;
 import com.example.scoreboard.service.HockeyService;
 import com.example.scoreboard.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,8 @@ public class HockeyController {
 
     @GetMapping("/boards")
     public String showBoards(Model model, Principal principal) {
-//        model.addAttribute("boards", hockeyService.findAll());
-        model.addAttribute("boards", userServiceImpl.findByEmail(principal.getName()).getBoardList());
+        model.addAttribute("boards", hockeyService.findAll());
+//        model.addAttribute("boards", userServiceImpl.findByEmail(principal.getName()).getBoardList());
         return "my_boards";
     }
 
@@ -46,9 +45,9 @@ public class HockeyController {
     @GetMapping("/board/{id}")
     public String openBoard(Model model, @PathVariable Long id, Principal principal, HttpServletResponse response) throws IOException {
         HockeyBoard board = hockeyService.findById(id);
-        User user = userServiceImpl.findByEmail(principal.getName());
+//        User user = userServiceImpl.findByEmail(principal.getName());
 
-        if (!user.getBoardList().contains(board)) response.sendError(HttpServletResponse.SC_FORBIDDEN);
+//        if (!user.getBoardList().contains(board)) response.sendError(HttpServletResponse.SC_FORBIDDEN);
         model.addAttribute("board", board);
         return "admin_board";
     }
@@ -112,27 +111,39 @@ public class HockeyController {
         return ResponseEntity.ok(map);
     }
 
-    @PostMapping("/add_penalty")
-    public String addPenalty(@RequestParam("penaltyNumber") String number, @RequestParam("penaltyTime") String time, @RequestParam("id") Long id) {
+    @PostMapping("/penalty")
+    public String addPenalty(@RequestParam("penaltyNumber") String number, @RequestParam("penaltyTime") String time, @RequestParam("operation") String operation,
+                             @RequestParam("id") Long id) {
         HockeyBoard board = hockeyService.findById(id);
 
-        if (number.isEmpty())
-            board.addPenalty(null, 120);
-
-        else if (board.getPenalty().containsKey(null)){
-            board.getPenalty().remove(null);
-            board.addPenalty(number, hockeyService.timeToSeconds(time));
-        } else
-            board.addPenalty(number, hockeyService.timeToSeconds(time));
+        if (operation.equals("")) {
+            if (number.isEmpty()) {
+                board.addPenalty(null, 120);
+            } else if (board.getPenalty().containsKey(null)) {
+                board.getPenalty().remove(null);
+                board.addPenalty(number, hockeyService.timeToSeconds(time));
+            } else
+                board.addPenalty(number, hockeyService.timeToSeconds(time));
+        }
+        if (operation.equals("X")) {
+            if (board.getPenalty().containsKey(number))
+                board.getPenalty().remove(number);
+            else if (board.getPenalty().containsKey(null) && number.equals(""))
+                board.getPenalty().remove(null);
+        }
         return "redirect:/hockey/board/" + id;
     }
 
     @PostMapping("/delete_penalty")
-    public String deletePenalty(@RequestParam("penaltyNumber") String number, @RequestParam("penaltyTime") String time, @RequestParam("id") Long id) {
-        HockeyBoard board = hockeyService.findById(id);
+    public String deletePenalty(@RequestParam("penaltyNumber") String number, @RequestParam("id") Long id) {
+//        HockeyBoard board = hockeyService.findById(id);
+//
+//        if (board.getPenalty().containsKey(number))
+//            board.getPenalty().remove(number);
+//
+//        if (board.getPenalty().containsKey(null) && number.equals(""))
+//            board.getPenalty().remove(null);
 
-        if (board.getPenalty().containsKey(number))
-            board.getPenalty().remove(number);
         return "redirect:/hockey/board/" + id;
     }
 

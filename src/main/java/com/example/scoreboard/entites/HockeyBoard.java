@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -38,7 +38,7 @@ public class HockeyBoard {
     private Integer currentTime;
 
     @Transient
-    private Map<String, Integer> penalty = new HashMap();
+    private Map<String, Integer> penalty = new LinkedHashMap();
 //    private Integer penaltyTime = 0;
 
     public void addPenalty(String num, Integer time) {

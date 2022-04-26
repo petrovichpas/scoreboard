@@ -16,7 +16,7 @@
     <link th:href="@{/css/dev.css}" rel="stylesheet"/>
     <link th:href="@{/css/main.css}" rel="stylesheet"/>
     <title>Board panel</title>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
+<!--    <meta name="_csrf" th:content="${_csrf.token}"/>-->
 </head>
 
 <body class="page">
@@ -45,36 +45,31 @@
 <!--                            <button type="button" class="btn btn-danger btn-lg btn-block" name="penal" th:text="Del"/>-->
 <!--                        </div>-->
 <!--                    </div>-->
-                </div>
 
-                <form th:action="@{/hockey/add_penalty}" method="POST">
-                    <input name="id" th:value="${board.id}" type="hidden">
-                    <input type="hidden" name="penaltyNumber" value="">
-                    <input type="hidden" name="penaltyTime" value="02:00">
-                    <button type="submit" th:text="Add"/>
-                </form>
 
-                <table id="penalty_table">
-                    <tbody>
-                        <tr th:each="b : ${board.penalty}">
+                    <form th:action="@{/hockey/penalty}" method="POST">
+                        <input name="id" th:value="${board.id}" type="hidden">
+                        <input type="hidden" name="penaltyNumber" value="">
+                        <input type="hidden" name="penaltyTime" value="02:00">
+                        <button type="submit" name="operation">Add penalty</button>
+                    </form>
+
+                    <table id="penalty_table">
+                        <tbody>
+                        <tr th:each="p : ${board.penalty}">
                             <td>
-                                <form th:action="@{/hockey/add_penalty}" method="POST" style="float: left;">
+                                <form th:action="@{/hockey/penalty}" method="POST">
                                     <input name="id" th:value="${board.id}" type="hidden">
-                                    <input type="tel" maxlength="2" name="penaltyNumber" th:value="${b.key}">
-                                    <input type="time" name="penaltyTime" th:value="((${b.value} < 1) ?  '00:00' : ${#numbers.formatInteger(b.value/60, 2) + ':' + #numbers.formatInteger(b.value%60, 2)})"/>
-                                    <button type="submit" th:text="V"/>
-                                </form>
-                                <form th:action="@{/hockey/delete_penalty}" method="POST" style="float: right;">
-                                    <input name="id" th:value="${board.id}" type="hidden">
-                                    <input name="penaltyNumber" th:value="${b.key}" type="hidden">
-                                    <input name="penaltyTime" th:value="((${b.value} < 1) ?  '00:00' : ${#numbers.formatInteger(b.value/60, 2) + ':' + #numbers.formatInteger(b.value%60, 2)})" type="hidden"/>
-                                    <button type="submit" th:text="X"/>
+                                    <input type="tel" maxlength="2" name="penaltyNumber" th:value="${p.key}" style="width: 33px">
+                                    <input style="width: 75px" type="time" name="penaltyTime" th:value="((${p.value} < 1) ?  '00:00' : ${#numbers.formatInteger(p.value/60, 2) + ':' + #numbers.formatInteger(p.value%60, 2)})"/>
+                                    <button type="submit" name="operation" th:text="V"/>
+                                    <button type="submit" name="operation" th:value="X" th:text="X"/>
                                 </form>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
-
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="period mb-4">
                     <div class="buttons-group mb-4 bordered">
@@ -96,7 +91,7 @@
                             <button value="secondsMinus" class="btn btn-success buttons-group_button" type="button" onclick="plusOrMinusOne(value)">-</button>
                         </div>
                     </div>
-                    <button id="startStop" type="button" class="btn btn-danger btn-lg btn-block" th:text="${board.startStop}"/>
+                    <button id="startStop" type="button" class="btn btn-danger btn-lg btn-block" th:text="${board.startStop}" th:value="${board.startStop}"/>
                 </div>
                 <div class="team-names_name bordered mb-4">
                     <input id="awayName" th:value="${board.awayName}" placeholder="Away" name="awayName" type="text" class="form-control mb-3" onchange="changeInput(value, name)">

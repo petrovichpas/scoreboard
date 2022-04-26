@@ -24,11 +24,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
 //                .antMatchers("/edit/**").hasAuthority("CAN_WRITE_ITEMS")
-                .antMatchers("/hockey/**").authenticated()
 //                .antMatchers("/hockey/boards/**").hasRole("USER")
+//                .antMatchers("/hockey/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
-//                .csrf().disable() // отключение проверки токена
+                .csrf().disable() // отключение проверки токена
 //                .cors().disable() // доступ к апи с других доменов
                 .formLogin()
                 .loginPage("/login")
