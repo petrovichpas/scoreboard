@@ -52,26 +52,26 @@ function changeMode(){
 };
 
 function getBoard() {
-    // if (document.getElementById("startStop").value == "Start") return;
-
-    $.ajax({
-        type: "GET",
-        url: "/hockey/get_board",
-        data: {id: id},
-        success: result => {
-            $("#currentTime").text(result.currentTime);
-            // if (result.startStop == "Stop") {
-            // $("#penaltyTime").val(String(~~(result.penaltyTime / 60)).padStart(2, '0') + ':' + String(result.penaltyTime % 60).padStart(2, '0'));
-            $("#penaltyTime").val(result.penaltyTime);
-            // if (result.currentTime > 0) {
-            // $("#time").text(String(~~(result.currentTime / 60)).padStart(2, '0') + ':' + String(result.currentTime % 60).padStart(2, '0'));
-            // } else $("#time").text('00:00');
-            // }
-            // $("#awayScore").text(result.awayScore)
-            // if (result.period <= 3 ) $("#period").text(result.period)
-            // else $("#period").text('OT');
-        }
-    });
+    if (document.getElementById("startStop").innerText === "Stop") {
+        $.ajax({
+            type: "GET",
+            url: "/hockey/get_board",
+            data: {id: id},
+            success: result => {
+                $("#currentTime").text(result.currentTime);
+                // if (result.startStop == "Stop") {
+                // $("#penaltyTime").val(String(~~(result.penaltyTime / 60)).padStart(2, '0') + ':' + String(result.penaltyTime % 60).padStart(2, '0'));
+                $("#penaltyTime").val(result.penaltyTime);
+                // if (result.currentTime > 0) {
+                // $("#time").text(String(~~(result.currentTime / 60)).padStart(2, '0') + ':' + String(result.currentTime % 60).padStart(2, '0'));
+                // } else $("#time").text('00:00');
+                // }
+                // $("#awayScore").text(result.awayScore)
+                // if (result.period <= 3 ) $("#period").text(result.period)
+                // else $("#period").text('OT');
+            }
+        });
+    }
 }
 
 function changeInput(val, name){

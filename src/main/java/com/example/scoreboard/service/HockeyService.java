@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -103,7 +104,11 @@ public class HockeyService {
                 while (board.getStartStop().equals("Stop")){
                     try {
                         Thread.sleep(999);
-//                        if (board.getPenaltyTime() > 0) board.setPenaltyTime(board.getPenaltyTime() - 1);
+
+                        for (Map.Entry<String, Integer> p : board.getPenalty().entrySet()) {
+                            if (p.getValue() > 0) p.setValue(p.getValue() - 1);
+                            else board.getPenalty().remove(p.getKey());
+                        }
 
                         if (board.isCountdownModeSelected()){
                             if (board.getCurrentTime() <= 0) {

@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8"/>
-    <title>December Market</title>
+    <title>ScoreBoard</title>
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
 </head>
 
 <body>
-<input id="id" th:value="${board.id}" type="hidden">
+    <input id="id" th:value="${board.id}" type="hidden">
+
     <div class="score-board">
         <header class="score-board_header">
             <div class="score-board_title">

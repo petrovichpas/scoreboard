@@ -60,7 +60,7 @@
                             <td>
                                 <form th:action="@{/hockey/penalty}" method="POST">
                                     <input name="id" th:value="${board.id}" type="hidden">
-                                    <input type="tel" maxlength="2" name="penaltyNumber" th:value="${p.key}" style="width: 33px">
+                                    <input type="tel" maxlength="2" name="penaltyNumber" th:value="${p.key}" style="width: 35px">
                                     <input style="width: 75px" type="time" name="penaltyTime" th:value="((${p.value} < 1) ?  '00:00' : ${#numbers.formatInteger(p.value/60, 2) + ':' + #numbers.formatInteger(p.value%60, 2)})"/>
                                     <button type="submit" name="operation" th:text="V"/>
                                     <button type="submit" name="operation" th:value="X" th:text="X"/>
@@ -91,7 +91,7 @@
                             <button value="secondsMinus" class="btn btn-success buttons-group_button" type="button" onclick="plusOrMinusOne(value)">-</button>
                         </div>
                     </div>
-                    <button id="startStop" type="button" class="btn btn-danger btn-lg btn-block" th:text="${board.startStop}" th:value="${board.startStop}"/>
+                    <button id="startStop" type="button" class="btn btn-danger btn-lg btn-block" th:text="${board.startStop}"/>
                 </div>
                 <div class="team-names_name bordered mb-4">
                     <input id="awayName" th:value="${board.awayName}" placeholder="Away" name="awayName" type="text" class="form-control mb-3" onchange="changeInput(value, name)">

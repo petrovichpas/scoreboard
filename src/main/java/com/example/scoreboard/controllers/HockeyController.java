@@ -46,7 +46,7 @@ public class HockeyController {
     public String openBoard(Model model, @PathVariable Long id, Principal principal, HttpServletResponse response) throws IOException {
         HockeyBoard board = hockeyService.findById(id);
 //        User user = userServiceImpl.findByEmail(principal.getName());
-
+//
 //        if (!user.getBoardList().contains(board)) response.sendError(HttpServletResponse.SC_FORBIDDEN);
         model.addAttribute("board", board);
         return "admin_board";
@@ -107,7 +107,6 @@ public class HockeyController {
         map.put("period", board.getPeriod());
         map.put("currentTime", hockeyService.timeToString(board.getCurrentTime()));
 //        map.put("penaltyTime", hockeyService.timeToString(board.getPenaltyTime()));
-
         return ResponseEntity.ok(map);
     }
 

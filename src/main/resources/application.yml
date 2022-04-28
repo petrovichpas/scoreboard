@@ -1,7 +1,13 @@
-#server:
-#  port: 8080
-#  servlet:
+server:
+  servlet:
+    session:
+      timeout: 7d
+      cookie:
+        http-only: true
+        secure: true
 #    context-path: '/'
+#  port: 8080
+
 
 spring:
   datasource:
